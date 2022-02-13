@@ -13,16 +13,20 @@ class SolarCalculator {
   }
 
   /**
-   * calculateUTCOffset
-   * is an approximation
+   *
+   * @param {LatLngTuple} position
+   * @returns {number} number between -14 and 14
+   * which is an approximate UTC offset based on position.
    */
   private calculateUTCOffset(position: LatLngTuple): number {
     return Math.ceil(position[1] / 15)
   }
 
   /**
-   * julianDay
-   * returns the Dublin Julian Day with baseline reference date of December 31, 1899, 12:00
+   *
+   * @param {Date} date
+   * @returns {number} the Julian Day using DublinJD reference date epoch of December 31, 1899, 12:00.
+   * The Julian Day is the total number of days since the beginning of Julian Epoch.
    * https://en.wikipedia.org/wiki/Julian_day
    */
   private julianDay(date: Date): number {
@@ -39,14 +43,16 @@ class SolarCalculator {
   }
 
   /**
-   * julianCentury
+   * @param {number} julianDay
+   * @returns {number} the Julian Century based on the Julian Day.
    */
   private julianCentury(julianDay: number): number {
     return (julianDay - 2451545) / 36525
   }
 
   /**
-   * meanLongtitudeOfSun
+   * @param {number} julianCentury
+   * @returns {number} the mean longitude of the Sun in degrees.
    * https://en.wikipedia.org/wiki/Position_of_the_Sun
    */
   private meanLongitudeOfSun(julianCentury: number): number {
@@ -57,7 +63,8 @@ class SolarCalculator {
   }
 
   /**
-   * meanAnomalyOfSun
+   * @param {number} julianCentury
+   * @returns {number} the mean anomaly of the Sun in degrees.
    * https://en.wikipedia.org/wiki/Position_of_the_Sun
    */
   private meanAnomalyOfSun(julianCentury: number): number {
@@ -65,7 +72,8 @@ class SolarCalculator {
   }
 
   /**
-   * orbitalEccentricityOfEarth
+   * @param {number} julianCentury
+   * @returns {number} orbital eccentricity of Earth, a unitless value.
    * https://en.wikipedia.org/wiki/Position_of_the_Sun
    */
   private orbitalEccentricityOfEarth(julianCentury: number): number {
@@ -75,7 +83,8 @@ class SolarCalculator {
   }
 
   /**
-   * meanEclipticObliquity
+   * @param {number} julianCentury
+   * @returns {number} mean ecliptic obliquity of Earth's orbit in degrees.
    * https://en.wikipedia.org/wiki/Position_of_the_Sun
    */
   private meanEclipticObliquity(julianCentury: number): number {
@@ -91,7 +100,9 @@ class SolarCalculator {
   }
 
   /**
-   * obliquityCorrection
+   * @param {number} meanEclipticObliquity
+   * @param {number} julianCentury
+   * @returns {number} corrected ecliptic obliquity of Earth's orbit in degrees.
    * https://en.wikipedia.org/wiki/Position_of_the_Sun
    */
   private correctedEclipticObliquity(
@@ -105,18 +116,24 @@ class SolarCalculator {
   }
 
   /**
-   * variationY
+   * @param {number} correctedObliquity
+   * @returns {number} returns a unitless variation value in obliquity.
    * https://en.wikipedia.org/wiki/Position_of_the_Sun
    */
-  private variationY(obliquityCorrection: number): number {
+  private variationY(correctedObliquity: number): number {
     return (
-      Math.tan((Math.PI / 180) * (obliquityCorrection / 2)) *
-      Math.tan((Math.PI / 180) * (obliquityCorrection / 2))
+      Math.tan((Math.PI / 180) * (correctedObliquity / 2)) *
+      Math.tan((Math.PI / 180) * (correctedObliquity / 2))
     )
   }
 
   /**
-   * equationOfTime
+   * @param {number} meanLongitudeOfSun
+   * @param {number} meanAnomalyOfSun
+   * @param {number} orbitalEccentricityOfEarth
+   * @param {number} variationY
+   * @returns {number} change in minutes of the time of solar noon.
+   * It is the difference between apparent solar time and mean solar time in minutes.
    * https://en.wikipedia.org/wiki/Equation_of_time
    */
   private equationOfTime(
@@ -152,7 +169,8 @@ class SolarCalculator {
    *
    * @param julianCentury
    * @param meanAnomalyOfSun
-   * @returns equation of center between sun and earth
+   * @returns the angular difference between the actual position Earth in its elliptical orbit
+   * and the position it would occupy if its motion were uniform, in a circular orbit of the same period.
    * https://en.wikipedia.org/wiki/Equation_of_the_center
    */
   private equationOfCenter(
@@ -168,6 +186,12 @@ class SolarCalculator {
     )
   }
 
+  /**
+   *
+   * @param {number} meanLongitudeOfSun
+   * @param {number} equationOfCenter
+   * @returns {number} true longitude of the Sun in degrees.
+   */
   private trueLongitudeOfSun(
     meanLongitudeOfSun: number,
     equationOfCenter: number
@@ -175,6 +199,12 @@ class SolarCalculator {
     return meanLongitudeOfSun + equationOfCenter
   }
 
+  /**
+   *
+   * @param {number} julianCentury
+   * @param {number} trueLongitudeOfSun
+   * @returns apparent longitude of the Sun in degrees.
+   */
   private apparentLongitudeOfSun(
     julianCentury: number,
     trueLongitudeOfSun: number
@@ -186,6 +216,12 @@ class SolarCalculator {
     )
   }
 
+  /**
+   *
+   * @param {number} apparentLongitudeOfSun
+   * @param {number} correctedObliquity
+   * @returns {number} the angle in degrees between the rays of the Sun and the plane of the Earth's equator.
+   */
   private solarDeclination(
     apparentLongitudeOfSun: number,
     correctedObliquity: number
@@ -200,8 +236,10 @@ class SolarCalculator {
   }
 
   /**
-   * calculateEquationOfTime
-   * Returns the equation of time in minutes for the given date at a specific position
+   * @param {Date} date
+   * @returns {number} the equation of time in minutes for the given date and position.
+   * It is the difference between apparent solar time and mean solar time in minutes.
+   * Or the change in minutes of the time of solar noon.
    * https://en.wikipedia.org/wiki/Equation_of_time
    */
   public calculateEquationOfTime(date: Date): number {
@@ -225,7 +263,9 @@ class SolarCalculator {
   }
 
   /**
-   * calculateSolarDeclination
+   * @param {Date} date
+   * @returns the solar declination for the given date and position.
+   * It is the angle in degrees between the rays of the Sun and the plane of the Earth's equator.
    */
   public calculateSolarDeclination(date: Date): number {
     const JD = this.julianDay(date)
