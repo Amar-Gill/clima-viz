@@ -1,4 +1,4 @@
-import { LatLngExpression } from 'leaflet'
+import type { LatLngExpression } from 'leaflet'
 import { useState } from 'react'
 import {
   MapContainer,

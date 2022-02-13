@@ -11,6 +11,9 @@ const Layout: React.FC<{}> = ({ children }) => {
           <li>
             <Link href="/site-location">Site Location</Link>
           </li>
+          <li>
+            <Link href="/solar-calculations">Solar Calculations</Link>
+          </li>
         </ul>
       </nav>
       <main className="pl-40">{children}</main>
