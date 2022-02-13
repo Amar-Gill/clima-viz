@@ -220,7 +220,8 @@ class SolarCalculator {
    *
    * @param {number} apparentLongitudeOfSun
    * @param {number} correctedObliquity
-   * @returns {number} the angle in degrees between the rays of the Sun and the plane of the Earth's equator.
+   * @returns {number} the declination of the sun in degrees. The solar declination varies from -23.44° at the (northern hemisphere) winter solstice,
+   * through 0° at the vernal equinox, to +23.44° at the summer solstice.
    */
   private solarDeclination(
     apparentLongitudeOfSun: number,
@@ -264,8 +265,9 @@ class SolarCalculator {
 
   /**
    * @param {Date} date
-   * @returns the solar declination for the given date and position.
-   * It is the angle in degrees between the rays of the Sun and the plane of the Earth's equator.
+   * @returns the solar declination of the Sun in degrees for the given date and position.
+   * The solar declination varies from -23.44° at the (northern hemisphere) winter solstice,
+   * through 0° at the vernal equinox, to +23.44° at the summer solstice.
    */
   public calculateSolarDeclination(date: Date): number {
     const JD = this.julianDay(date)
