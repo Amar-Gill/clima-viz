@@ -94,7 +94,7 @@ class SolarCalculator {
    * obliquityCorrection
    * https://en.wikipedia.org/wiki/Position_of_the_Sun
    */
-  private obliquityCorrection(
+  private correctedEclipticObliquity(
     meanEclipticObliquity: number,
     julianCentury: number
   ): number {
@@ -168,12 +168,43 @@ class SolarCalculator {
     )
   }
 
+  private trueLongitudeOfSun(
+    meanLongitudeOfSun: number,
+    equationOfCenter: number
+  ): number {
+    return meanLongitudeOfSun + equationOfCenter
+  }
+
+  private apparentLongitudeOfSun(
+    julianCentury: number,
+    trueLongitudeOfSun: number
+  ): number {
+    return (
+      trueLongitudeOfSun -
+      0.00569 -
+      0.00478 * Math.sin((Math.PI / 180) * (125.04 - 1934.136 * julianCentury))
+    )
+  }
+
+  private solarDeclination(
+    apparentLongitudeOfSun: number,
+    correctedObliquity: number
+  ): number {
+    return (
+      (180 / Math.PI) *
+      Math.asin(
+        Math.sin((Math.PI / 180) * correctedObliquity) *
+          Math.sin((Math.PI / 180) * apparentLongitudeOfSun)
+      )
+    )
+  }
+
   /**
    * calculateEquationOfTime
    * Returns the equation of time in minutes for the given date at a specific position
    * https://en.wikipedia.org/wiki/Equation_of_time
    */
-  public calculateEquationOfTime(date: Date) {
+  public calculateEquationOfTime(date: Date): number {
     const JD = this.julianDay(date)
 
     const JC = this.julianCentury(JD)
@@ -186,11 +217,39 @@ class SolarCalculator {
 
     const obliquity = this.meanEclipticObliquity(JC)
 
-    const correctedObliquity = this.obliquityCorrection(obliquity, JC)
+    const correctedObliquity = this.correctedEclipticObliquity(obliquity, JC)
 
     const varY = this.variationY(correctedObliquity)
 
     return this.equationOfTime(meanLong, meanAnom, orbitalEccentricity, varY)
+  }
+
+  /**
+   * calculateSolarDeclination
+   */
+  public calculateSolarDeclination(date: Date): number {
+    const JD = this.julianDay(date)
+
+    const JC = this.julianCentury(JD)
+
+    const meanLong = this.meanLongitudeOfSun(JC)
+
+    const meanAnom = this.meanAnomalyOfSun(JC)
+
+    const obliquity = this.meanEclipticObliquity(JC)
+
+    const correctedObliquity = this.correctedEclipticObliquity(obliquity, JC)
+
+    const equationOfCenter = this.equationOfCenter(JC, meanAnom)
+
+    const trueLongitude = this.trueLongitudeOfSun(meanLong, equationOfCenter)
+
+    const apparentLongitudeOfSun = this.apparentLongitudeOfSun(
+      JC,
+      trueLongitude
+    )
+
+    return this.solarDeclination(apparentLongitudeOfSun, correctedObliquity)
   }
 }
 
