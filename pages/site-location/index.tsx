@@ -25,7 +25,7 @@ const SiteLocation: NextPage = () => {
           crossOrigin=""
         />
       </Head>
-      <Map />)
+      <Map />
     </>
   )
 }
