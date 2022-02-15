@@ -16,7 +16,7 @@ const Layout: React.FC<{}> = ({ children }) => {
           </li>
         </ul>
       </nav>
-      <main className="pl-40">{children}</main>
+      <main className="container mx-auto pl-40">{children}</main>
     </>
   )
 }
