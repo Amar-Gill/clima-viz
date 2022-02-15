@@ -36,7 +36,7 @@ const startDate = new Date(`January 1, ${currentYear}`)
 // to do handle leapyears
 const arrayYear = new Array(365).fill(null)
 
-const options = {
+const solarDeclinationOptions = {
   responsive: true,
   plugins: {
     legend: {
@@ -44,12 +44,25 @@ const options = {
     },
     title: {
       display: true,
-      text: `Solar Declination Angle - ${currentYear}`,
+      text: `Solar Declination Angle (degrees) - ${currentYear}`,
     },
   },
 }
 
-const data = {
+const equationOfTimeOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top' as const,
+    },
+    title: {
+      display: true,
+      text: `Equation of Time (minutes) - ${currentYear}`,
+    },
+  },
+}
+
+const solarDeclinationData = {
   labels: arrayYear.map((v, i) => i),
   datasets: [
     {
@@ -61,11 +74,24 @@ const data = {
   ],
 }
 
+const equationOfTimeData = {
+  labels: arrayYear.map((v, i) => i),
+  datasets: [
+    {
+      label: 'Equation of Time',
+      data: arrayYear.map((v, i) =>
+        calculator.calculateEquationOfTime(addDays(startDate, i))
+      ),
+    },
+  ],
+}
+
 const SolarCalculations = () => {
   return (
     <div>
       <p>data: {testData}</p>
-      <Line options={options} data={data} />
+      <Line options={solarDeclinationOptions} data={solarDeclinationData} />
+      <Line options={equationOfTimeOptions} data={equationOfTimeData} />
     </div>
   )
 }
