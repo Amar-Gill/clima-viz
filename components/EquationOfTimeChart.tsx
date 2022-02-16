@@ -13,7 +13,8 @@ const EquationOfTimeChart = ({
   calculator,
   startDate,
 }: EquationOfTimeChartProps) => {
-  if (isLeapYear(startDate)) arrayYear.push(null)
+  const labels = arrayYear.map((v, i) => i + 1)
+  if (isLeapYear(startDate)) labels.push(366)
 
   const options = {
     responsive: true,
@@ -29,12 +30,12 @@ const EquationOfTimeChart = ({
   }
 
   const data = {
-    labels: arrayYear.map((v, i) => i),
+    labels,
     datasets: [
       {
         label: 'Equation of Time',
-        data: arrayYear.map((v, i) =>
-          calculator.calculateEquationOfTime(addDays(startDate, i))
+        data: labels.map((v, i) =>
+          calculator.calculateEquationOfTime(addDays(startDate, i - 1))
         ),
       },
     ],
