@@ -1,4 +1,3 @@
-import type { LatLngTuple } from 'leaflet'
 import { Line } from 'react-chartjs-2'
 import SolarCalculator from '../../utils/solar-calculator'
 import {
@@ -12,6 +11,7 @@ import {
   Legend,
 } from 'chart.js'
 import { addDays } from 'date-fns'
+import useStore from '../../utils/store'
 
 ChartJS.register(
   CategoryScale,
@@ -22,10 +22,6 @@ ChartJS.register(
   Tooltip,
   Legend
 )
-
-const testData = [51.51, -0.06] as LatLngTuple
-
-const calculator = new SolarCalculator(testData)
 
 const now = new Date()
 
@@ -62,34 +58,38 @@ const equationOfTimeOptions = {
   },
 }
 
-const solarDeclinationData = {
-  labels: arrayYear.map((v, i) => i),
-  datasets: [
-    {
-      label: 'Solar Declination Angle',
-      data: arrayYear.map((v, i) =>
-        calculator.calculateSolarDeclination(addDays(startDate, i))
-      ),
-    },
-  ],
-}
-
-const equationOfTimeData = {
-  labels: arrayYear.map((v, i) => i),
-  datasets: [
-    {
-      label: 'Equation of Time',
-      data: arrayYear.map((v, i) =>
-        calculator.calculateEquationOfTime(addDays(startDate, i))
-      ),
-    },
-  ],
-}
-
 const SolarCalculations = () => {
+  const { position } = useStore((state) => state)
+
+  const calculator = new SolarCalculator(position)
+
+  const solarDeclinationData = {
+    labels: arrayYear.map((v, i) => i),
+    datasets: [
+      {
+        label: 'Solar Declination Angle',
+        data: arrayYear.map((v, i) =>
+          calculator.calculateSolarDeclination(addDays(startDate, i))
+        ),
+      },
+    ],
+  }
+
+  const equationOfTimeData = {
+    labels: arrayYear.map((v, i) => i),
+    datasets: [
+      {
+        label: 'Equation of Time',
+        data: arrayYear.map((v, i) =>
+          calculator.calculateEquationOfTime(addDays(startDate, i))
+        ),
+      },
+    ],
+  }
+
   return (
     <div>
-      <p>data: {testData}</p>
+      <p>data: {position?.toString()}</p>
       <Line options={solarDeclinationOptions} data={solarDeclinationData} />
       <Line options={equationOfTimeOptions} data={equationOfTimeData} />
     </div>

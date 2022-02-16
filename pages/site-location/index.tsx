@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
+import useStore from '../../utils/store'
 
 const Map = dynamic(
   () => {
@@ -10,6 +11,7 @@ const Map = dynamic(
 )
 
 const SiteLocation: NextPage = () => {
+  const { position } = useStore((state) => state)
   return (
     <>
       <Head>
@@ -25,7 +27,13 @@ const SiteLocation: NextPage = () => {
           crossOrigin=""
         />
       </Head>
-      <Map />
+      <div className="flex h-screen flex-col rounded-lg border border-solid border-black">
+        <section className="flex-1 border-b border-solid border-black p-2">
+          <p>Project Coordinates:</p>
+          <p>{position?.toString() ?? 'None selected'}</p>
+        </section>
+        <Map />
+      </div>
     </>
   )
 }

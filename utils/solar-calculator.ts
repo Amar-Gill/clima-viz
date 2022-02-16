@@ -1,25 +1,25 @@
 import { differenceInDays } from 'date-fns'
-import type { LatLngTuple } from 'leaflet'
+import type { LatLng } from 'leaflet'
 
 class SolarCalculator {
   private baselineReferenceJD = 2415020
 
   private baselineReferenceDate = new Date('January 1, 1900')
 
-  private position: LatLngTuple
+  private position: LatLng
 
-  constructor(position: LatLngTuple) {
+  constructor(position: LatLng) {
     this.position = position
   }
 
   /**
    *
-   * @param {LatLngTuple} position
+   * @param {LatLng} position
    * @returns {number} number between -14 and 14
    * which is an approximate UTC offset based on position.
    */
-  private calculateUTCOffset(position: LatLngTuple): number {
-    return Math.ceil(position[1] / 15)
+  private calculateUTCOffset(position: LatLng): number {
+    return Math.ceil(position.lng / 15)
   }
 
   /**
@@ -169,7 +169,7 @@ class SolarCalculator {
    *
    * @param julianCentury
    * @param meanAnomalyOfSun
-   * @returns the angular difference between the actual position Earth in its elliptical orbit
+   * @returns {number} the angular difference between the actual position Earth in its elliptical orbit
    * and the position it would occupy if its motion were uniform, in a circular orbit of the same period.
    * https://en.wikipedia.org/wiki/Equation_of_the_center
    */
@@ -265,7 +265,7 @@ class SolarCalculator {
 
   /**
    * @param {Date} date
-   * @returns the solar declination of the Sun in degrees for the given date and position.
+   * @returns {number} the solar declination of the Sun in degrees for the given date and position.
    * The solar declination varies from -23.44° at the (northern hemisphere) winter solstice,
    * through 0° at the vernal equinox, to +23.44° at the summer solstice.
    */

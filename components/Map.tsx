@@ -1,5 +1,4 @@
-import type { LatLngExpression } from 'leaflet'
-import { useState } from 'react'
+import useStore from '../utils/store'
 import {
   MapContainer,
   TileLayer,
@@ -9,7 +8,7 @@ import {
 } from 'react-leaflet'
 
 const LocationMarker = () => {
-  const [position, setPosition] = useState<LatLngExpression | null>(null)
+  const { position, setPosition } = useStore((state) => state)
   const map = useMapEvents({
     click(e) {
       setPosition(e.latlng)
@@ -20,7 +19,8 @@ const LocationMarker = () => {
   return position === null ? null : (
     <Marker position={position}>
       <Popup>
-        Project Coordinates: <br />
+        <span className="underline decoration-solid">Project Coordinates:</span>
+        <br />
         {position.toString()}
       </Popup>
     </Marker>
@@ -28,8 +28,13 @@ const LocationMarker = () => {
 }
 
 const Map = () => {
+  const { position } = useStore((state) => state)
   return (
-    <MapContainer className="h-screen" center={[51.505, -0.09]} zoom={13}>
+    <MapContainer
+      className="h-full flex-auto"
+      center={position ?? [51.505, -0.09]}
+      zoom={13}
+    >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
