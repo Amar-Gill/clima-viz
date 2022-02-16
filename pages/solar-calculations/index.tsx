@@ -1,4 +1,3 @@
-import { Line } from 'react-chartjs-2'
 import SolarCalculator from '../../utils/solar-calculator'
 import {
   Chart as ChartJS,
@@ -10,8 +9,10 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js'
-import { addDays } from 'date-fns'
 import useStore from '../../utils/store'
+import SolarDeclinationChart from '../../components/SolarDeclinationChart'
+import EquationOfTimeChart from '../../components/EquationOfTimeChart'
+import { startOfYear } from 'date-fns'
 
 ChartJS.register(
   CategoryScale,
@@ -23,75 +24,25 @@ ChartJS.register(
   Legend
 )
 
-const now = new Date()
-
-const currentYear = now.getUTCFullYear()
-
-const startDate = new Date(`January 1, ${currentYear}`)
-
-// to do handle leapyears
-const arrayYear = new Array(365).fill(null)
-
-const solarDeclinationOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-    title: {
-      display: true,
-      text: `Solar Declination Angle (degrees) - ${currentYear}`,
-    },
-  },
-}
-
-const equationOfTimeOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-    title: {
-      display: true,
-      text: `Equation of Time (minutes) - ${currentYear}`,
-    },
-  },
-}
+const startDate = startOfYear(new Date())
 
 const SolarCalculations = () => {
   const { position } = useStore((state) => state)
 
-  const calculator = new SolarCalculator(position)
-
-  const solarDeclinationData = {
-    labels: arrayYear.map((v, i) => i),
-    datasets: [
-      {
-        label: 'Solar Declination Angle',
-        data: arrayYear.map((v, i) =>
-          calculator.calculateSolarDeclination(addDays(startDate, i))
-        ),
-      },
-    ],
-  }
-
-  const equationOfTimeData = {
-    labels: arrayYear.map((v, i) => i),
-    datasets: [
-      {
-        label: 'Equation of Time',
-        data: arrayYear.map((v, i) =>
-          calculator.calculateEquationOfTime(addDays(startDate, i))
-        ),
-      },
-    ],
-  }
+  const calculator = position ? new SolarCalculator(position) : null
 
   return (
     <div>
       <p>data: {position?.toString()}</p>
-      <Line options={solarDeclinationOptions} data={solarDeclinationData} />
-      <Line options={equationOfTimeOptions} data={equationOfTimeData} />
+      {calculator && (
+        <>
+          <SolarDeclinationChart
+            calculator={calculator}
+            startDate={startDate}
+          />
+          <EquationOfTimeChart calculator={calculator} startDate={startDate} />
+        </>
+      )}
     </div>
   )
 }
