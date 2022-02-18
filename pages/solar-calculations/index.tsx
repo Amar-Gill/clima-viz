@@ -37,7 +37,7 @@ const SolarCalculations = () => {
 
   if (position) {
     const calculator = new SolarCalculator(position)
-    const UTCOffset = calculator.calculateUTCOffset(position)
+    const UTCOffset = calculator.calculateUTCOffset()
 
     return (
       <div>

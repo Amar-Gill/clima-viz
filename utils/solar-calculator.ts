@@ -14,11 +14,11 @@ class SolarCalculator {
 
   /**
    *
-   * @param {LatLng} position
+   * @param {LatLng} position The Leaflet js position associated with the calculator instance
    * @returns {number} number between -14 and 14
    * which is an approximate UTC offset based on position.
    */
-  public calculateUTCOffset(position: LatLng): number {
+  public calculateUTCOffset(position = this.position): number {
     return Math.ceil(position.lng / 15)
   }
 
