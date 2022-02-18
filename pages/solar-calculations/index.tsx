@@ -27,40 +27,43 @@ ChartJS.register(
 
 const now = new Date()
 const startYear = now.getUTCFullYear()
-const options = new Array(11).fill(null).map((_, i) => -5 + i + startYear)
+const selectYearOptions = new Array(11)
+  .fill(null)
+  .map((_, i) => -5 + i + startYear)
 
 const SolarCalculations = () => {
   const { position } = useStore((state) => state)
   const [startDate, setStartDate] = useState(startOfYear(now))
 
-  const calculator = position ? new SolarCalculator(position) : null
+  if (position) {
+    const calculator = new SolarCalculator(position)
+    const UTCOffset = calculator.calculateUTCOffset(position)
 
-  return (
-    <div>
-      <p>Position: {position?.toString()}</p>
-      <label htmlFor="select-year">Select Year: </label>
-      <select
-        id="select-year"
-        defaultValue={startYear}
-        onChange={(e) => setStartDate(new Date(`${e.target.value}-01-01`))}
-      >
-        {options.map((v) => (
-          <option value={v} key={v}>
-            {v}
-          </option>
-        ))}
-      </select>
-      {calculator && (
-        <>
-          <SolarDeclinationChart
-            calculator={calculator}
-            startDate={startDate}
-          />
-          <EquationOfTimeChart calculator={calculator} startDate={startDate} />
-        </>
-      )}
-    </div>
-  )
+    return (
+      <div>
+        <p>Position: {position.toString()}</p>
+        <p>UTC Offset = {UTCOffset} hours</p>
+        <label htmlFor="select-year">Select Year: </label>
+        <select
+          id="select-year"
+          defaultValue={startYear}
+          onChange={(e) => setStartDate(new Date(`${e.target.value}-01-01`))}
+        >
+          <br />
+          {selectYearOptions.map((v) => (
+            <option value={v} key={v}>
+              {v}
+            </option>
+          ))}
+        </select>
+        <EquationOfTimeChart calculator={calculator} startDate={startDate} />
+        <br />
+        <SolarDeclinationChart calculator={calculator} startDate={startDate} />
+      </div>
+    )
+  }
+
+  return <p>No position selected.</p>
 }
 
 export default SolarCalculations

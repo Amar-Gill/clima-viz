@@ -18,7 +18,7 @@ class SolarCalculator {
    * @returns {number} number between -14 and 14
    * which is an approximate UTC offset based on position.
    */
-  private calculateUTCOffset(position: LatLng): number {
+  public calculateUTCOffset(position: LatLng): number {
     return Math.ceil(position.lng / 15)
   }
 
@@ -203,7 +203,7 @@ class SolarCalculator {
    *
    * @param {number} julianCentury
    * @param {number} trueLongitudeOfSun
-   * @returns apparent longitude of the Sun in degrees.
+   * @returns {number} apparent longitude of the Sun in degrees.
    */
   private apparentLongitudeOfSun(
     julianCentury: number,
