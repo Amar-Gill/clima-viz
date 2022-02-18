@@ -56,6 +56,7 @@ const SolarCalculations = () => {
             </option>
           ))}
         </select>
+        <br />
         <EquationOfTimeChart calculator={calculator} startDate={startDate} />
         <br />
         <SolarDeclinationChart calculator={calculator} startDate={startDate} />
