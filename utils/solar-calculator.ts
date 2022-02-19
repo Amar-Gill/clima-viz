@@ -237,6 +237,23 @@ class SolarCalculator {
   }
 
   /**
+   *
+   * @param {Date} date date to calculate solar noon at
+   * @returns {number} time of day where solar noon occurs, as floating point number representing fraction of a day
+   */
+  public calculateSolarNoon(date: Date) {
+    const eqnOfTime = this.calculateEquationOfTime(date)
+
+    return (
+      (720 -
+        4 * this.position.lng -
+        eqnOfTime +
+        this.calculateUTCOffset() * 60) /
+      1440
+    )
+  }
+
+  /**
    * @param {Date} date
    * @returns {number} the equation of time in minutes for the given date and position.
    * It is the difference between apparent solar time and mean solar time in minutes.
