@@ -14,6 +14,7 @@ import SolarDeclinationChart from '../../components/SolarDeclinationChart'
 import EquationOfTimeChart from '../../components/EquationOfTimeChart'
 import { startOfYear } from 'date-fns'
 import { useState } from 'react'
+import SolarNoonChart from '../../components/SolarNoonChart'
 
 ChartJS.register(
   CategoryScale,
@@ -49,13 +50,14 @@ const SolarCalculations = () => {
           defaultValue={startYear}
           onChange={(e) => setStartDate(new Date(`${e.target.value}-01-01`))}
         >
-          <br />
           {selectYearOptions.map((v) => (
             <option value={v} key={v}>
               {v}
             </option>
           ))}
         </select>
+        <br />
+        <SolarNoonChart calculator={calculator} startDate={startDate} />
         <br />
         <EquationOfTimeChart calculator={calculator} startDate={startDate} />
         <br />
