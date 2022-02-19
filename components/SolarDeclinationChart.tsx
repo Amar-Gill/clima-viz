@@ -2,7 +2,7 @@ import { addDays, isLeapYear } from 'date-fns'
 import { Line } from 'react-chartjs-2'
 import SolarCalculator from '../utils/solar-calculator'
 
-const arrayYear = new Array(365).fill(null)
+const nullArray = new Array(365).fill(null)
 
 type SolarDeclinationChartProps = {
   calculator: SolarCalculator
@@ -13,8 +13,15 @@ const SolarDeclinationChart = ({
   calculator,
   startDate,
 }: SolarDeclinationChartProps) => {
-  const labels = arrayYear.map((v, i) => i + 1)
-  if (isLeapYear(startDate)) labels.push(366)
+  const arrayYear = nullArray.map((_, i) => i)
+  if (isLeapYear(startDate)) arrayYear.push(365)
+
+  const arrayDates = arrayYear.map((_, i) => addDays(startDate, i))
+
+  const labels = arrayDates.map((date) => {
+    const a = date.toDateString().split(' ')
+    return `${a[1]}-${a[2]}`
+  })
 
   const options = {
     responsive: true,
@@ -34,8 +41,8 @@ const SolarDeclinationChart = ({
     datasets: [
       {
         label: 'Solar Declination Angle',
-        data: labels.map((v, i) =>
-          calculator.calculateSolarDeclination(addDays(startDate, i - 1))
+        data: arrayDates.map((date) =>
+          calculator.calculateSolarDeclination(date)
         ),
       },
     ],
