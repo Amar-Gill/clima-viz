@@ -48,7 +48,9 @@ const SolarCalculations = () => {
         <select
           id="select-year"
           defaultValue={startYear}
-          onChange={(e) => setStartDate(new Date(`${e.target.value}-01-01`))}
+          onChange={(e) =>
+            setStartDate(new Date(parseInt(e.target.value), 0, 1))
+          }
         >
           {selectYearOptions.map((v) => (
             <option value={v} key={v}>
