@@ -2,7 +2,7 @@ import { addDays, isLeapYear } from 'date-fns'
 import { Line } from 'react-chartjs-2'
 import SolarCalculator from '../utils/solar-calculator'
 
-const arrayYear = new Array(365).fill(null)
+const nullArray = new Array(365).fill(null)
 
 type SolarNoonChartProps = {
   calculator: SolarCalculator
@@ -10,8 +10,15 @@ type SolarNoonChartProps = {
 }
 
 const SolarNoonChart = ({ calculator, startDate }: SolarNoonChartProps) => {
-  const labels = arrayYear.map((v, i) => i + 1)
-  if (isLeapYear(startDate)) labels.push(366)
+  const arrayYear = nullArray.map((_, i) => i)
+  if (isLeapYear(startDate)) arrayYear.push(365)
+
+  const arrayDates = arrayYear.map((v) => addDays(startDate, v))
+
+  const labels = arrayDates.map((date) => {
+    const a = date.toDateString().split(' ')
+    return `${a[1]}-${a[2]}`
+  })
 
   const options = {
     responsive: true,
@@ -31,9 +38,7 @@ const SolarNoonChart = ({ calculator, startDate }: SolarNoonChartProps) => {
     datasets: [
       {
         label: 'Solar Noon',
-        data: labels.map((v, i) =>
-          calculator.calculateSolarNoon(addDays(startDate, i - 1))
-        ),
+        data: arrayDates.map((date) => calculator.calculateSolarNoon(date)),
       },
     ],
   }
