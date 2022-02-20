@@ -41,7 +41,7 @@ const SolarCalculations = () => {
     return (
       <div>
         <p>Position: {position.toString()}</p>
-        <p>UTC Offset = {UTCOffset} hours</p>
+        <p>UTC Offset: {UTCOffset} hours</p>
         <label htmlFor="select-year">Select Year: </label>
         <select
           id="select-year"
