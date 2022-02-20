@@ -24,6 +24,38 @@ class SolarCalculator {
 
   /**
    *
+   * @param {number} numDays the number of days as a decimal value
+   * @returns {string} string representing the time of day in the format 'hh:mm:ss'
+   */
+  static convertDaysToTimeString(numDays: number): string {
+    // account for roll over time where dayFraction > 1
+    const singleDayFraction = numDays % 1;
+
+    const hours = singleDayFraction * 24;
+    const truncatedHours = Math.trunc(hours);
+
+    const minutes = (hours - truncatedHours) * 60;
+    const truncatedMinutes = Math.trunc(minutes);
+
+    const seconds = (minutes - truncatedMinutes) * 60;
+    const truncatedSeconds = Math.trunc(seconds);
+
+    const hh =
+      truncatedHours.toString().length === 1 ? `0${truncatedHours}` : truncatedHours;
+    const mm =
+      truncatedMinutes.toString().length === 1
+        ? `0${truncatedMinutes}`
+        : truncatedMinutes;
+    const ss =
+      truncatedSeconds.toString().length === 1
+        ? `0${truncatedSeconds}`
+        : truncatedSeconds;
+
+    return `${hh}:${mm}:${ss}`;
+  }
+
+  /**
+   *
    * @param {Date} date
    * @returns {number} the Julian Day using DublinJD reference date epoch of December 31, 1899, 12:00.
    * The Julian Day is the total number of days since the beginning of Julian Epoch.

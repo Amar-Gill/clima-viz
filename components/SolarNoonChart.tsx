@@ -30,6 +30,22 @@ const SolarNoonChart = ({ calculator, startDate }: SolarNoonChartProps) => {
         display: true,
         text: `Time of Solar Noon (day fraction) - ${startDate.getUTCFullYear()}`,
       },
+      tooltip: {
+        callbacks: {
+          label: function (ctx) {
+            return SolarCalculator.convertDaysToTimeString(ctx.parsed.y);
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        ticks: {
+          callback: function (v) {
+            return SolarCalculator.convertDaysToTimeString(v);
+          },
+        },
+      },
     },
   };
 
@@ -37,7 +53,7 @@ const SolarNoonChart = ({ calculator, startDate }: SolarNoonChartProps) => {
     labels,
     datasets: [
       {
-        label: 'Solar Noon',
+        label: 'Time of Solar Noon',
         data: arrayDates.map((date) => calculator.calculateSolarNoon(date)),
       },
     ],
