@@ -1,5 +1,5 @@
 import useStore from 'lib/store';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet';
 
 const LocationMarker = () => {
   const { position, setPosition } = useStore((state) => state);

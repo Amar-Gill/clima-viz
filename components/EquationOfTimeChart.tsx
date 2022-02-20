@@ -1,6 +1,6 @@
 import { addDays, isLeapYear } from 'date-fns';
-import { Line } from 'react-chartjs-2';
 import SolarCalculator from 'lib/solar-calculator';
+import { Line } from 'react-chartjs-2';
 
 const nullArray = new Array(365).fill(null);
 

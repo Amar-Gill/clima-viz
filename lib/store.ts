@@ -1,5 +1,5 @@
-import create from 'zustand';
 import { LatLng } from 'leaflet';
+import create from 'zustand';
 
 type State = {
   position: LatLng | null;

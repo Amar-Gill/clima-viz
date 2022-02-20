@@ -1,20 +1,20 @@
-import SolarCalculator from 'lib/solar-calculator';
 import {
-  Chart as ChartJS,
   CategoryScale,
+  Chart as ChartJS,
+  Legend,
   LinearScale,
-  PointElement,
   LineElement,
+  PointElement,
   Title,
   Tooltip,
-  Legend,
 } from 'chart.js';
-import useStore from 'lib/store';
-import SolarDeclinationChart from 'components/SolarDeclinationChart';
 import EquationOfTimeChart from 'components/EquationOfTimeChart';
-import { startOfYear } from 'date-fns';
-import { useState } from 'react';
+import SolarDeclinationChart from 'components/SolarDeclinationChart';
 import SolarNoonChart from 'components/SolarNoonChart';
+import { startOfYear } from 'date-fns';
+import SolarCalculator from 'lib/solar-calculator';
+import useStore from 'lib/store';
+import { useState } from 'react';
 
 ChartJS.register(
   CategoryScale,
