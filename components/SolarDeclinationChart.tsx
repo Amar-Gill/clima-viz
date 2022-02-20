@@ -1,3 +1,4 @@
+import { ChartData, ChartOptions } from 'chart.js';
 import { addDays, isLeapYear } from 'date-fns';
 import SolarCalculator from 'lib/solar-calculator';
 import { Line } from 'react-chartjs-2';
@@ -20,7 +21,7 @@ const SolarDeclinationChart = ({ calculator, startDate }: SolarDeclinationChartP
     return `${a[1]}-${a[2]}`;
   });
 
-  const options = {
+  const options: ChartOptions<'line'> = {
     responsive: true,
     plugins: {
       legend: {
@@ -33,7 +34,7 @@ const SolarDeclinationChart = ({ calculator, startDate }: SolarDeclinationChartP
     },
   };
 
-  const data = {
+  const data: ChartData<'line'> = {
     labels,
     datasets: [
       {

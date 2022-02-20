@@ -1,3 +1,4 @@
+import { ChartData, ChartOptions } from 'chart.js';
 import { addDays, isLeapYear } from 'date-fns';
 import SolarCalculator from 'lib/solar-calculator';
 import { Line } from 'react-chartjs-2';
@@ -20,7 +21,7 @@ const SolarNoonChart = ({ calculator, startDate }: SolarNoonChartProps) => {
     return `${a[1]}-${a[2]}`;
   });
 
-  const options = {
+  const options: ChartOptions<'line'> = {
     responsive: true,
     plugins: {
       legend: {
@@ -42,6 +43,7 @@ const SolarNoonChart = ({ calculator, startDate }: SolarNoonChartProps) => {
       y: {
         ticks: {
           callback: function (v) {
+            if (typeof v === 'string') v = parseInt(v);
             return SolarCalculator.convertDaysToTimeString(v);
           },
         },
@@ -49,7 +51,7 @@ const SolarNoonChart = ({ calculator, startDate }: SolarNoonChartProps) => {
     },
   };
 
-  const data = {
+  const data: ChartData<'line'> = {
     labels,
     datasets: [
       {
