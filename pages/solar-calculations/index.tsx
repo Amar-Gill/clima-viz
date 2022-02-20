@@ -1,4 +1,4 @@
-import SolarCalculator from '../../utils/solar-calculator';
+import SolarCalculator from '../../lib/solar-calculator';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,7 +9,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import useStore from '../../utils/store';
+import useStore from '../../lib/store';
 import SolarDeclinationChart from '../../components/SolarDeclinationChart';
 import EquationOfTimeChart from '../../components/EquationOfTimeChart';
 import { startOfYear } from 'date-fns';

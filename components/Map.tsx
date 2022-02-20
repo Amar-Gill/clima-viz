@@ -1,4 +1,4 @@
-import useStore from '../utils/store';
+import useStore from '../lib/store';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 
 const LocationMarker = () => {
