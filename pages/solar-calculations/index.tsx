@@ -1,4 +1,4 @@
-import SolarCalculator from '../../utils/solar-calculator'
+import SolarCalculator from '../../utils/solar-calculator';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,13 +8,13 @@ import {
   Title,
   Tooltip,
   Legend,
-} from 'chart.js'
-import useStore from '../../utils/store'
-import SolarDeclinationChart from '../../components/SolarDeclinationChart'
-import EquationOfTimeChart from '../../components/EquationOfTimeChart'
-import { startOfYear } from 'date-fns'
-import { useState } from 'react'
-import SolarNoonChart from '../../components/SolarNoonChart'
+} from 'chart.js';
+import useStore from '../../utils/store';
+import SolarDeclinationChart from '../../components/SolarDeclinationChart';
+import EquationOfTimeChart from '../../components/EquationOfTimeChart';
+import { startOfYear } from 'date-fns';
+import { useState } from 'react';
+import SolarNoonChart from '../../components/SolarNoonChart';
 
 ChartJS.register(
   CategoryScale,
@@ -23,22 +23,20 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
-)
+  Legend,
+);
 
-const now = new Date()
-const startYear = now.getUTCFullYear()
-const selectYearOptions = new Array(11)
-  .fill(null)
-  .map((_, i) => -5 + i + startYear)
+const now = new Date();
+const startYear = now.getUTCFullYear();
+const selectYearOptions = new Array(11).fill(null).map((_, i) => -5 + i + startYear);
 
 const SolarCalculations = () => {
-  const { position } = useStore((state) => state)
-  const [startDate, setStartDate] = useState(startOfYear(now))
+  const { position } = useStore((state) => state);
+  const [startDate, setStartDate] = useState(startOfYear(now));
 
   if (position) {
-    const calculator = new SolarCalculator(position)
-    const UTCOffset = calculator.calculateUTCOffset()
+    const calculator = new SolarCalculator(position);
+    const UTCOffset = calculator.calculateUTCOffset();
 
     return (
       <div>
@@ -48,10 +46,7 @@ const SolarCalculations = () => {
         <select
           id="select-year"
           defaultValue={startYear}
-          onChange={(e) =>
-            setStartDate(new Date(parseInt(e.target.value), 0, 1))
-          }
-        >
+          onChange={(e) => setStartDate(new Date(parseInt(e.target.value), 0, 1))}>
           {selectYearOptions.map((v) => (
             <option value={v} key={v}>
               {v}
@@ -65,10 +60,10 @@ const SolarCalculations = () => {
         <br />
         <SolarDeclinationChart calculator={calculator} startDate={startDate} />
       </div>
-    )
+    );
   }
 
-  return <p>No position selected.</p>
-}
+  return <p>No position selected.</p>;
+};
 
-export default SolarCalculations
+export default SolarCalculations;

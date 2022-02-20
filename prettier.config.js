@@ -5,7 +5,7 @@ module.exports = {
   semi: true,
   trailingComma: 'all',
   printWidth: 90,
-  jsxBracketSameLine: true,
+  bracketSameLine: true,
   endOfLine: 'auto',
   tailwindConfig: './tailwind.config.js',
-}
+};

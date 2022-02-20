@@ -1,25 +1,22 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import dynamic from 'next/dynamic'
-import useStore from '../../utils/store'
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import dynamic from 'next/dynamic';
+import useStore from '../../utils/store';
 
 const Map = dynamic(
   () => {
-    return import('../../components/Map')
+    return import('../../components/Map');
   },
-  { ssr: false }
-)
+  { ssr: false },
+);
 
 const SiteLocation: NextPage = () => {
-  const { position } = useStore((state) => state)
+  const { position } = useStore((state) => state);
   return (
     <>
       <Head>
         <title>Ifrit | Site Locator</title>
-        <meta
-          name="description"
-          content="Site location using map coordinates"
-        />
+        <meta name="description" content="Site location using map coordinates" />
         <link
           rel="stylesheet"
           href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -35,7 +32,7 @@ const SiteLocation: NextPage = () => {
         <Map />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default SiteLocation
+export default SiteLocation;

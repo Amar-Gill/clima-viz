@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 const Layout: React.FC<{}> = ({ children }) => {
   return (
@@ -18,7 +18,7 @@ const Layout: React.FC<{}> = ({ children }) => {
       </nav>
       <main className="container mx-auto pl-40">{children}</main>
     </>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;
