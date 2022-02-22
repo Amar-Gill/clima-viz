@@ -1,5 +1,5 @@
 import { differenceInDays } from 'date-fns';
-import { LatLngLiteral } from 'leaflet';
+import type { LatLngLiteral } from 'leaflet';
 
 class SolarCalculator {
   private baselineReferenceJD = 2415020;
