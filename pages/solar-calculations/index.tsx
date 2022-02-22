@@ -178,7 +178,9 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
           ))}
         </select>
         <Line options={solarNoonOptions} data={_solarNoonData} />
+        <br />
         <Line options={equationOfTimeOptions} data={_equationOfTimeData} />
+        <br />
         <Line options={solarDeclinationOptions} data={_solarDeclinationData} />
       </div>
     );
