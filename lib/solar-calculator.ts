@@ -257,6 +257,96 @@ class SolarCalculator {
 
   /**
    *
+   * @param {number} latitude - number representing latitudinal position to assess.
+   * @param {number} solarDeclination - solar declination angle in degrees.
+   * @returns {number} returns the hour angle at sunrise in degrees.
+   * @see https://en.wikipedia.org/wiki/Hour_angle
+   */
+  private hourAngleSunrise(latitude: number, solarDeclination: number) {
+    return (
+      (180 / Math.PI) *
+      Math.acos(
+        Math.cos((Math.PI / 180) * 90.833) /
+          (Math.cos((Math.PI / 180) * latitude) *
+            Math.cos((Math.PI / 180) * solarDeclination)) -
+          Math.tan((Math.PI / 180) * latitude) *
+            Math.tan((Math.PI / 180) * solarDeclination),
+      )
+    );
+  }
+
+  /**
+   *
+   * @param {number} hourAngleSunrise hour angle at sunrise in degrees.
+   * @param {number} solarNoon time of solar noon as a fraction of a day. 0 - 1.
+   * @returns {number} time of sunrise as a fraction of a day. 0 -1.
+   */
+  private sunriseTime(hourAngleSunrise: number, solarNoon: number) {
+    return (solarNoon * 1440 - hourAngleSunrise * 4) / 1440;
+  }
+
+  /**
+   *
+   * @param {number} hourAngleSunrise hour angle at sunrise in degrees.
+   * @param {number} solarNoon time of solar noon as a fraction of a day. 0 - 1.
+   * @returns {number} time of sunset as a fraction of a day. 0 - 1.
+   */
+  private sunsetTime(hourAngleSunrise: number, solarNoon: number) {
+    return (solarNoon * 1440 + hourAngleSunrise * 4) / 1440;
+  }
+
+  /**
+   *
+   * @param {Date} date the Date to calculate times for.
+   * @returns {Object} object containing sunrise and sunset times as day fractions. 0 - 1.
+   */
+  public calculateSunriseAndSunset(date: Date) {
+    const JD = this.julianDay(date);
+
+    const JC = this.julianCentury(JD);
+
+    const meanLong = this.meanLongitudeOfSun(JC);
+
+    const meanAnom = this.meanAnomalyOfSun(JC);
+
+    const obliquity = this.meanEclipticObliquity(JC);
+
+    const correctedObliquity = this.correctedEclipticObliquity(obliquity, JC);
+
+    const equationOfCenter = this.equationOfCenter(JC, meanAnom);
+
+    const trueLongitude = this.trueLongitudeOfSun(meanLong, equationOfCenter);
+
+    const apparentLongitudeOfSun = this.apparentLongitudeOfSun(JC, trueLongitude);
+
+    const solarDeclination = this.solarDeclination(
+      apparentLongitudeOfSun,
+      correctedObliquity,
+    );
+
+    const hourAngleSunrise = this.hourAngleSunrise(this.position.lat, solarDeclination);
+
+    const orbitalEccentricity = this.orbitalEccentricityOfEarth(JC);
+
+    const varY = this.variationY(correctedObliquity);
+
+    const eqnOfTime = this.equationOfTime(meanLong, meanAnom, orbitalEccentricity, varY);
+
+    const solarNoon =
+      (720 - 4 * this.position.lng - eqnOfTime + this.calculateUTCOffset() * 60) / 1440;
+
+    const sunriseTime = this.sunriseTime(hourAngleSunrise, solarNoon);
+
+    const sunsetTime = this.sunsetTime(hourAngleSunrise, solarNoon);
+
+    return {
+      sunriseTime,
+      sunsetTime,
+    };
+  }
+
+  /**
+   *
    * @param {Date} date date to calculate solar noon at
    * @returns {number} time of day where solar noon occurs, as floating point number representing fraction of a day
    */
