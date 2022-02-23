@@ -1,14 +1,14 @@
 import { differenceInDays } from 'date-fns';
-import type { LatLng } from 'leaflet';
+import type { LatLngLiteral } from 'leaflet';
 
 class SolarCalculator {
   private baselineReferenceJD = 2415020;
 
   private baselineReferenceDate = new Date('January 1, 1900');
 
-  private position: LatLng;
+  private position: LatLngLiteral;
 
-  constructor(position: LatLng) {
+  constructor(position: LatLngLiteral) {
     this.position = position;
   }
 
