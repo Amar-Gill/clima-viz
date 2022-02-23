@@ -6,6 +6,8 @@ type Data = {
   solarNoonData: number[];
   equationOfTimeData: number[];
   solarDeclinationData: number[];
+  sunriseTimeData: number[];
+  sunsetTimeData: number[];
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
@@ -19,9 +21,19 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
 
   const days = getDaysOfYear(parseInt(year));
 
+  const sunriseTimeData = [] as number[];
+  const sunsetTimeData = [] as number[];
+  days.forEach((date) => {
+    const { sunriseTime, sunsetTime } = calculator.calculateSunriseAndSunset(date);
+    sunriseTimeData.push(sunriseTime);
+    sunsetTimeData.push(sunsetTime);
+  });
+
   res.status(200).json({
     solarNoonData: days.map((date) => calculator.calculateSolarNoon(date)),
     equationOfTimeData: days.map((date) => calculator.calculateEquationOfTime(date)),
     solarDeclinationData: days.map((date) => calculator.calculateSolarDeclination(date)),
+    sunriseTimeData,
+    sunsetTimeData,
   });
 }
