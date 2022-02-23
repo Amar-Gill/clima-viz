@@ -54,6 +54,8 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
   const [solarNoonData, setSolarNoonData] = useState([]);
   const [equationOfTimeData, setEquationOfTimeData] = useState([]);
   const [solarDeclinationData, setSolarDeclinationData] = useState([]);
+  const [sunriseTimeData, setSunriseTimeData] = useState([]);
+  const [sunsetTimeData, setSunsetTimeData] = useState([]);
 
   const labels = isLeapYear(startDate) ? labelsLeapYear : labelsYear;
 
@@ -69,6 +71,8 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
         setSolarNoonData(data.solarNoonData);
         setEquationOfTimeData(data.equationOfTimeData);
         setSolarDeclinationData(data.solarDeclinationData);
+        setSunriseTimeData(data.sunriseTimeData);
+        setSunsetTimeData(data.sunsetTimeData);
       });
   }, [startDate, position]);
 
@@ -108,6 +112,86 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
       {
         label: 'Time of Solar Noon',
         data: solarNoonData,
+      },
+    ],
+  };
+
+  const sunriseTimeOptions: ChartOptions<'line'> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: `Time of Apparent Sunrise (hh:mm:ss) - ${startDate.getUTCFullYear()}`,
+      },
+      tooltip: {
+        callbacks: {
+          label: function (ctx) {
+            return SolarCalculator.convertDaysToTimeString(ctx.parsed.y);
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        ticks: {
+          callback: function (v) {
+            if (typeof v === 'string') v = parseInt(v);
+            return SolarCalculator.convertDaysToTimeString(v);
+          },
+        },
+      },
+    },
+  };
+
+  const _sunriseTimeData: ChartData<'line'> = {
+    labels,
+    datasets: [
+      {
+        label: 'Time of Apparent Sunrise',
+        data: sunriseTimeData,
+      },
+    ],
+  };
+
+  const sunsetTimeOptions: ChartOptions<'line'> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: `Time of Apparent Sunset (hh:mm:ss) - ${startDate.getUTCFullYear()}`,
+      },
+      tooltip: {
+        callbacks: {
+          label: function (ctx) {
+            return SolarCalculator.convertDaysToTimeString(ctx.parsed.y);
+          },
+        },
+      },
+    },
+    scales: {
+      y: {
+        ticks: {
+          callback: function (v) {
+            if (typeof v === 'string') v = parseInt(v);
+            return SolarCalculator.convertDaysToTimeString(v);
+          },
+        },
+      },
+    },
+  };
+
+  const _sunsetTimeData: ChartData<'line'> = {
+    labels,
+    datasets: [
+      {
+        label: 'Time of Apparent Sunset',
+        data: sunsetTimeData,
       },
     ],
   };
@@ -177,7 +261,11 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
             </option>
           ))}
         </select>
+        <Line options={sunriseTimeOptions} data={_sunriseTimeData} />
+        <br />
         <Line options={solarNoonOptions} data={_solarNoonData} />
+        <br />
+        <Line options={sunsetTimeOptions} data={_sunsetTimeData} />
         <br />
         <Line options={equationOfTimeOptions} data={_equationOfTimeData} />
         <br />
