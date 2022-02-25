@@ -34,7 +34,7 @@ const Layout: React.FC<{}> = ({ children }) => {
           </li>
         </ul>
       </nav>
-      <main className="container mx-auto pl-40">{children}</main>
+      <main className="container mx-auto h-screen pl-40">{children}</main>
     </div>
   );
 };
