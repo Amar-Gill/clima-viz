@@ -14,6 +14,7 @@ import { isLeapYear, startOfYear } from 'date-fns';
 import SolarCalculator from 'lib/solar-calculator';
 import useStore from 'lib/store';
 import { getChartLabels } from 'lib/utils';
+import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 
@@ -245,36 +246,44 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
   if (position) {
     const calculator = new SolarCalculator(position);
     const UTCOffset = calculator.calculateUTCOffset();
-
-    return (
-      <div>
-        <p>Position: {position.toString()}</p>
-        <p>UTC Offset: {UTCOffset} hours</p>
-        <label htmlFor="select-year">Select Year: </label>
-        <select
-          id="select-year"
-          defaultValue={startYear}
-          onChange={(e) => setStartDate(new Date(parseInt(e.target.value), 0, 1))}>
-          {selectYearOptions.map((v) => (
-            <option value={v} key={v}>
-              {v}
-            </option>
-          ))}
-        </select>
-        <Line options={sunriseTimeOptions} data={_sunriseTimeData} />
-        <br />
-        <Line options={solarNoonOptions} data={_solarNoonData} />
-        <br />
-        <Line options={sunsetTimeOptions} data={_sunsetTimeData} />
-        <br />
-        <Line options={equationOfTimeOptions} data={_equationOfTimeData} />
-        <br />
-        <Line options={solarDeclinationOptions} data={_solarDeclinationData} />
-      </div>
-    );
   }
 
-  return <p>No position selected.</p>;
+  return (
+    <>
+      <Head>
+        <title>Ifrit | Solar Calculations</title>
+        <meta name="description" content="Solar charts based on position." />
+      </Head>
+      {position ? (
+        <>
+          <p>Position: {position?.toString()}</p>
+          <p>UTC Offset: {UTCOffset} hours</p>
+          <label htmlFor="select-year">Select Year: </label>
+          <select
+            id="select-year"
+            defaultValue={startYear}
+            onChange={(e) => setStartDate(new Date(parseInt(e.target.value), 0, 1))}>
+            {selectYearOptions.map((v) => (
+              <option value={v} key={v}>
+                {v}
+              </option>
+            ))}
+          </select>
+          <Line options={sunriseTimeOptions} data={_sunriseTimeData} />
+          <br />
+          <Line options={solarNoonOptions} data={_solarNoonData} />
+          <br />
+          <Line options={sunsetTimeOptions} data={_sunsetTimeData} />
+          <br />
+          <Line options={equationOfTimeOptions} data={_equationOfTimeData} />
+          <br />
+          <Line options={solarDeclinationOptions} data={_solarDeclinationData} />
+        </>
+      ) : (
+        <p>No position selected.</p>
+      )}
+    </>
+  );
 };
 
 export default SolarCalculations;
