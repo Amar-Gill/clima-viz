@@ -7,12 +7,12 @@ const NavLink = ({ href, children }: React.PropsWithChildren<LinkProps>) => {
 
   const dynamicClass =
     router.pathname === href
-      ? 'bg-zinc-200 font-bold border-y border-zinc-400'
-      : 'hover:bg-zinc-200';
+      ? 'bg-zinc-200 font-semibold border-zinc-400'
+      : 'hover:bg-zinc-200 border-zinc-50 hover:border-zinc-400';
   return (
     <Link href={href} passHref>
       <a>
-        <div className={`px-2 py-1 ${dynamicClass}`}>{children}</div>
+        <div className={`border-l-4 p-1 ${dynamicClass}`}>{children}</div>
       </a>
     </Link>
   );
