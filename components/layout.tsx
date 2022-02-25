@@ -20,8 +20,8 @@ const NavLink = ({ href, children }: React.PropsWithChildren<LinkProps>) => {
 
 const Layout: React.FC<{}> = ({ children }) => {
   return (
-    <>
-      <nav className="fixed h-screen w-40 border-r border-zinc-400 bg-zinc-50 shadow shadow-zinc-400">
+    <div className="bg-zinc-50 text-zinc-900">
+      <nav className="fixed h-screen w-40 border-r border-zinc-400 shadow shadow-zinc-400">
         <ul>
           <li>
             <NavLink href="/">Home</NavLink>
@@ -34,8 +34,8 @@ const Layout: React.FC<{}> = ({ children }) => {
           </li>
         </ul>
       </nav>
-      <main className="container mx-auto bg-zinc-50 pl-40">{children}</main>
-    </>
+      <main className="container mx-auto pl-40">{children}</main>
+    </div>
   );
 };
 
