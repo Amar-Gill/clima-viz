@@ -24,12 +24,14 @@ const SiteLocation: NextPage = () => {
           crossOrigin=""
         />
       </Head>
-      <div className="flex h-screen flex-col rounded-lg border border-solid border-black">
-        <section className="flex-1 border-b border-solid border-black p-2">
-          <p>Project Coordinates:</p>
-          <p>{position?.toString() ?? 'None selected'}</p>
-        </section>
-        <Map />
+      <div className="h-screen py-4">
+        <div className="flex h-full flex-col rounded-lg border border-solid border-zinc-400 shadow shadow-zinc-400">
+          <section className="flex-1 border-b border-solid border-zinc-400 p-2">
+            <p>Project Coordinates:</p>
+            <p>{position?.toString() ?? 'None selected'}</p>
+          </section>
+          <Map />
+        </div>
       </div>
     </>
   );
