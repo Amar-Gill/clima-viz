@@ -244,10 +244,7 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
     ],
   };
 
-  if (position) {
-    const calculator = new SolarCalculator(position);
-    const UTCOffset = calculator.calculateUTCOffset();
-  }
+  const calculator = position ? new SolarCalculator(position) : undefined;
 
   return (
     <div className="py-4">
@@ -256,11 +253,11 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
         <meta name="description" content="Solar charts based on position." />
       </Head>
       <div className="rounded-lg border border-solid border-zinc-400 shadow shadow-zinc-400">
-        {position ? (
+        {calculator ? (
           <>
             <section className="border-b border-solid border-zinc-400 p-2">
               <p>Position: {position?.toString()}</p>
-              <p>UTC Offset: {UTCOffset} hours</p>
+              <p>UTC Offset: {calculator.calculateUTCOffset()} hours</p>
               <label htmlFor="select-year">Select Year: </label>
               <select
                 id="select-year"
