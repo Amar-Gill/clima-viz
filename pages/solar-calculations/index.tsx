@@ -114,6 +114,10 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
       {
         label: 'Time of Solar Noon',
         data: solarNoonData,
+        pointRadius: 0,
+        pointHitRadius: 3,
+        borderWidth: 4,
+        borderColor: 'rgba(0,0,0,0.3)',
       },
     ],
   };
@@ -154,6 +158,10 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
       {
         label: 'Time of Apparent Sunrise',
         data: sunriseTimeData,
+        pointRadius: 0,
+        pointHitRadius: 3,
+        borderWidth: 4,
+        borderColor: 'rgba(0,0,0,0.3)',
       },
     ],
   };
@@ -194,6 +202,10 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
       {
         label: 'Time of Apparent Sunset',
         data: sunsetTimeData,
+        pointRadius: 0,
+        pointHitRadius: 3,
+        borderWidth: 4,
+        borderColor: 'rgba(0,0,0,0.3)',
       },
     ],
   };
@@ -217,6 +229,10 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
       {
         label: 'Equation of Time',
         data: equationOfTimeData,
+        pointRadius: 0,
+        pointHitRadius: 3,
+        borderWidth: 4,
+        borderColor: 'rgba(0,0,0,0.3)',
       },
     ],
   };
@@ -240,6 +256,10 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
       {
         label: 'Solar Declination Angle',
         data: solarDeclinationData,
+        pointRadius: 0,
+        pointHitRadius: 3,
+        borderWidth: 4,
+        borderColor: 'rgba(0,0,0,0.3)',
       },
     ],
   };
