@@ -23,6 +23,11 @@ const SiteLocation: NextPage = () => {
           integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
           crossOrigin=""
         />
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.css"
+          crossOrigin=""
+        />
       </Head>
       <div className="h-screen py-4">
         <div className="flex h-full flex-col rounded-lg border border-solid border-zinc-400 shadow shadow-zinc-400">

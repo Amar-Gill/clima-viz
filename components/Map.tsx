@@ -1,5 +1,17 @@
 import useStore from 'lib/store';
-import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet';
+import { useEffect, useState } from 'react';
+import {
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  useMap,
+  useMapEvents,
+} from 'react-leaflet';
+import { Browser, control, LatLng } from 'leaflet';
+import Script from 'next/script';
+
+const apiKey = process.env.NEXT_PUBLIC_GEOAPIFY;
 
 const LocationMarker = () => {
   const { position, setPosition } = useStore((state) => state);
@@ -21,19 +33,57 @@ const LocationMarker = () => {
   );
 };
 
+const AddressSearchControl = () => {
+  const { setPosition } = useStore((state) => state);
+  const map = useMap();
+
+  useEffect(() => {
+    const addressSearchControl = control.addressSearch(apiKey, {
+      position: 'topright',
+      resultCallback: (address) => {
+        const newPosition = new LatLng(address.lat, address.lon);
+        setPosition(newPosition);
+        map.setView(newPosition, map.getZoom());
+      },
+      suggestionsCallback: (suggestions) => {
+        console.log(suggestions);
+      },
+    });
+
+    map.addControl(addressSearchControl);
+  }, []);
+
+  return null;
+};
+
 const Map = () => {
+  const [geoapify, setGeoapify] = useState(false);
   const { position } = useStore((state) => state);
+
+  const mapStyle = 'osm-bright-smooth';
+
+  const mapURL = Browser.retina
+    ? `https://maps.geoapify.com/v1/tile/${mapStyle}/{z}/{x}/{y}.png?apiKey=${apiKey}`
+    : `https://maps.geoapify.com/v1/tile/${mapStyle}/{z}/{x}/{y}@2x.png?apiKey=${apiKey}`;
+
   return (
-    <MapContainer
-      className="h-full flex-auto"
-      center={position ?? [51.505, -0.09]}
-      zoom={13}>
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    <>
+      <Script
+        onLoad={() => setGeoapify(true)}
+        src="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.js"
       />
-      <LocationMarker />
-    </MapContainer>
+      <MapContainer
+        className="h-full flex-auto"
+        center={position ?? [51.505, -0.09]}
+        zoom={13}>
+        <TileLayer
+          attribution='Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | <a href="https://openmaptiles.org/" rel="nofollow" target="_blank">© OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright" rel="nofollow" target="_blank">© OpenStreetMap</a> contributors'
+          url={mapURL}
+        />
+        <LocationMarker />
+        {geoapify && <AddressSearchControl />}
+      </MapContainer>
+    </>
   );
 };
 
