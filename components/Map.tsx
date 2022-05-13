@@ -50,7 +50,7 @@ const AddressSearchControl = () => {
         map.setView(newPosition, map.getZoom());
       },
       suggestionsCallback: (suggestions: any) => {
-        console.log(suggestions);
+        return;
       },
     });
 
