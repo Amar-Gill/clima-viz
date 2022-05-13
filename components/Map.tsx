@@ -38,6 +38,7 @@ const AddressSearchControl = () => {
   const map = useMap();
 
   useEffect(() => {
+    // @ts-ignore
     const addressSearchControl = control.addressSearch(apiKey, {
       position: 'topright',
       resultCallback: (address: { lat: number; lon: number }) => {
