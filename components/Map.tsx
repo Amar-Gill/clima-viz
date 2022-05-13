@@ -40,12 +40,12 @@ const AddressSearchControl = () => {
   useEffect(() => {
     const addressSearchControl = control.addressSearch(apiKey, {
       position: 'topright',
-      resultCallback: (address) => {
+      resultCallback: (address: { lat: number; lon: number }) => {
         const newPosition = new LatLng(address.lat, address.lon);
         setPosition(newPosition);
         map.setView(newPosition, map.getZoom());
       },
-      suggestionsCallback: (suggestions) => {
+      suggestionsCallback: (suggestions: any) => {
         console.log(suggestions);
       },
     });
