@@ -42,6 +42,9 @@ const AddressSearchControl = () => {
     const addressSearchControl = control.addressSearch(apiKey, {
       position: 'topright',
       resultCallback: (address: { lat: number; lon: number }) => {
+        if (!address) {
+          return;
+        }
         const newPosition = new LatLng(address.lat, address.lon);
         setPosition(newPosition);
         map.setView(newPosition, map.getZoom());
