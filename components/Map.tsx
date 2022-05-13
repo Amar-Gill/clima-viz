@@ -61,8 +61,7 @@ const AddressSearchControl = () => {
 };
 
 const Map = () => {
-  const [geoapify, setGeoapify] = useState(false);
-  const { position } = useStore((state) => state);
+  const { position, geoapifyLoaded, setGeoapifyLoaded } = useStore((state) => state);
 
   const mapStyle = 'osm-bright-smooth';
 
@@ -73,7 +72,7 @@ const Map = () => {
   return (
     <>
       <Script
-        onLoad={() => setGeoapify(true)}
+        onLoad={() => setGeoapifyLoaded(true)}
         src="https://unpkg.com/@geoapify/leaflet-address-search-plugin@^1/dist/L.Control.GeoapifyAddressSearch.min.js"
       />
       <MapContainer
@@ -85,7 +84,7 @@ const Map = () => {
           url={mapURL}
         />
         <LocationMarker />
-        {geoapify && <AddressSearchControl />}
+        {geoapifyLoaded && <AddressSearchControl />}
       </MapContainer>
     </>
   );
