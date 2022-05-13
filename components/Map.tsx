@@ -1,4 +1,6 @@
+import { Browser, control, LatLng } from 'leaflet';
 import useStore from 'lib/store';
+import Script from 'next/script';
 import { useEffect, useState } from 'react';
 import {
   MapContainer,
@@ -8,8 +10,6 @@ import {
   useMap,
   useMapEvents,
 } from 'react-leaflet';
-import { Browser, control, LatLng } from 'leaflet';
-import Script from 'next/script';
 
 const apiKey = process.env.NEXT_PUBLIC_GEOAPIFY;
 
