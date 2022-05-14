@@ -21,6 +21,10 @@ export const AddressSearch = () => {
         e.stopPropagation();
       });
 
+      el.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+      });
+
       const autocomplete = new GeocoderAutocomplete(
         el,
         `${process.env.NEXT_PUBLIC_GEOAPIFY}`,
