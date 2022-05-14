@@ -1,6 +1,8 @@
 import useStore from 'lib/store';
 import { MapContainer, Marker, Popup, TileLayer, useMapEvents } from 'react-leaflet';
 
+import { AddressSearch } from './AddressSearch';
+
 const LocationMarker = () => {
   const { position, setPosition } = useStore((state) => state);
   const map = useMapEvents({
@@ -33,6 +35,7 @@ const Map = () => {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <LocationMarker />
+      <AddressSearch />
     </MapContainer>
   );
 };
