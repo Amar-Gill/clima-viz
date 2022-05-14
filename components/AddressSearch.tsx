@@ -26,6 +26,9 @@ export const AddressSearch = () => {
       );
 
       autocomplete.on('select', (location) => {
+        if (!location) {
+          return;
+        }
         const { lat, lon } = location.properties;
         const newPosition = new LatLng(lat, lon);
         setPosition(newPosition);
