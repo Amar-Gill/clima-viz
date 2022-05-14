@@ -1,0 +1,51 @@
+import { useMap } from 'react-leaflet';
+import { Control, DomUtil, LatLng, Map } from 'leaflet';
+import { GeocoderAutocomplete } from '@geoapify/geocoder-autocomplete';
+import { useEffect } from 'react';
+import useStore from 'lib/store';
+
+export const AddressSearch = () => {
+  const mapContainer = useMap();
+  const { setPosition } = useStore((state) => state);
+
+  const SearchControl = Control.extend({
+    options: {
+      position: 'topright',
+    },
+    onAdd: function (map: Map) {
+      const el = DomUtil.create('div');
+
+      el.className = 'relative minimal round-borders';
+
+      const autocomplete = new GeocoderAutocomplete(
+        el,
+        `${process.env.NEXT_PUBLIC_GEOAPIFY}`,
+        {
+          placeholder: 'Enter an address',
+        },
+      );
+
+      autocomplete.on('select', (location) => {
+        const { lat, lon } = location.properties;
+        const newPosition = new LatLng(lat, lon);
+        setPosition(newPosition);
+        map.setView(newPosition, map.getZoom());
+      });
+
+      autocomplete.on('suggestions', (suggestions) => {
+        return;
+      });
+
+      return el;
+    },
+    onRemove: function (map: Map) {
+      return;
+    },
+  });
+
+  useEffect(() => {
+    mapContainer.addControl(new SearchControl());
+  }, []);
+
+  return null;
+};
