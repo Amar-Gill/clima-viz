@@ -17,6 +17,10 @@ export const AddressSearch = () => {
 
       el.className = 'relative minimal round-borders';
 
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+
       const autocomplete = new GeocoderAutocomplete(
         el,
         `${process.env.NEXT_PUBLIC_GEOAPIFY}`,
