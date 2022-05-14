@@ -1,8 +1,8 @@
-import { useMap } from 'react-leaflet';
-import { Control, DomUtil, LatLng, Map } from 'leaflet';
 import { GeocoderAutocomplete } from '@geoapify/geocoder-autocomplete';
-import { useEffect } from 'react';
+import { Control, DomUtil, LatLng, Map } from 'leaflet';
 import useStore from 'lib/store';
+import { useEffect } from 'react';
+import { useMap } from 'react-leaflet';
 
 export const AddressSearch = () => {
   const mapContainer = useMap();
