@@ -48,6 +48,9 @@ const Layout: React.FC<{}> = ({ children }) => {
           <li>
             <NavLink href="/solar-calculations">Solar Calculations</NavLink>
           </li>
+          <li>
+            <NavLink href="/blackbody-model">Black Body Model</NavLink>
+          </li>
         </ul>
       </nav>
       <nav className="min-h-6 flex w-screen justify-between sm:hidden">
@@ -97,6 +100,9 @@ const Layout: React.FC<{}> = ({ children }) => {
             </li>
             <li className="my-2">
               <NavLinkMobile href="/solar-calculations">Solar Calculations</NavLinkMobile>
+            </li>
+            <li className="my-2">
+              <NavLinkMobile href="/blackbody-model">Black Body Model</NavLinkMobile>
             </li>
           </ul>
         </div>
