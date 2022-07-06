@@ -107,7 +107,7 @@ const Layout: React.FC<{}> = ({ children }) => {
           </ul>
         </div>
       )}
-      <main className="container mx-auto min-h-screen sm:pl-40">{children}</main>
+      <main className="min-h-screen sm:pl-40">{children}</main>
     </div>
   );
 };
