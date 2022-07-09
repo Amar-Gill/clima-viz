@@ -31,7 +31,7 @@ const BlackBodyModel = () => {
         <gridHelper />
         <ambientLight />
         <pointLight intensity={4} position={[10, 8, 6]} />
-        <mesh position-y={0.5}>
+        <mesh position={[0.5, height / 2, 0.5]}>
           <boxGeometry args={[width, height, depth]} />
           <meshStandardMaterial color="#24242e" />
         </mesh>
