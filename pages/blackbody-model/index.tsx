@@ -13,7 +13,7 @@ const BlackBodyModel = () => {
     height: {
       value: 1,
       min: 1,
-      max: 10,
+      max: 6,
       step: 1,
     },
     depth: {
@@ -26,7 +26,7 @@ const BlackBodyModel = () => {
 
   return (
     <div className="h-screen w-full">
-      <Canvas>
+      <Canvas camera={{ position: [5, 5, 5] }}>
         <OrbitControls />
         <gridHelper />
         <ambientLight />
