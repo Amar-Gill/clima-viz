@@ -16,6 +16,7 @@ const Home: NextPage = () => {
           <ul className="list-disc pl-4">
             <li>project site selection</li>
             <li>solar charts based on geographic position</li>
+            <li>black body model visualizer</li>
           </ul>
         </div>
       </div>
