@@ -24,7 +24,7 @@ const SiteLocation: NextPage = () => {
           crossOrigin=""
         />
       </Head>
-      <div className="h-screen py-4">
+      <div className="container h-screen py-4">
         <div className="flex h-full flex-col rounded-lg border border-solid border-zinc-400 shadow shadow-zinc-400">
           <section className="flex-1 border-b border-solid border-zinc-400 p-2">
             <p>Project Coordinates:</p>

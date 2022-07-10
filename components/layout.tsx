@@ -33,7 +33,7 @@ const NavLinkMobile = ({ href, children }: React.PropsWithChildren<LinkProps>) =
   );
 };
 
-const Layout: React.FC<{}> = ({ children }) => {
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   return (
     <div className="bg-zinc-50 text-zinc-900">
@@ -47,6 +47,9 @@ const Layout: React.FC<{}> = ({ children }) => {
           </li>
           <li>
             <NavLink href="/solar-calculations">Solar Calculations</NavLink>
+          </li>
+          <li>
+            <NavLink href="/blackbody-model">Black Body Model</NavLink>
           </li>
         </ul>
       </nav>
@@ -98,10 +101,13 @@ const Layout: React.FC<{}> = ({ children }) => {
             <li className="my-2">
               <NavLinkMobile href="/solar-calculations">Solar Calculations</NavLinkMobile>
             </li>
+            <li className="my-2">
+              <NavLinkMobile href="/blackbody-model">Black Body Model</NavLinkMobile>
+            </li>
           </ul>
         </div>
       )}
-      <main className="container mx-auto min-h-screen sm:pl-40">{children}</main>
+      <main className="min-h-screen sm:pl-40">{children}</main>
     </div>
   );
 };

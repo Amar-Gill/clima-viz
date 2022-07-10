@@ -267,55 +267,59 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
   const calculator = position ? new SolarCalculator(position) : undefined;
 
   return (
-    <div className="py-4">
+    <>
       <Head>
         <title>Ifrit | Solar Calculations</title>
         <meta name="description" content="Solar charts based on position." />
       </Head>
-      <div className="rounded-lg border border-solid border-zinc-400 shadow shadow-zinc-400">
-        {calculator ? (
-          <>
-            <section className="border-b border-solid border-zinc-400 p-2">
-              <p>Position: {position?.toString()}</p>
-              <p>UTC Offset: {calculator.calculateUTCOffset()} hours</p>
-              <label htmlFor="select-year">Select Year: </label>
-              <select
-                id="select-year"
-                defaultValue={startYear}
-                onChange={(e) => setStartDate(new Date(parseInt(e.target.value), 0, 1))}>
-                {selectYearOptions.map((v) => (
-                  <option value={v} key={v}>
-                    {v}
-                  </option>
-                ))}
-              </select>
-            </section>
-            <section className="p-2">
-              <Line options={sunriseTimeOptions} data={_sunriseTimeData} />
-              <br />
-              <Line options={solarNoonOptions} data={_solarNoonData} />
-              <br />
-              <Line options={sunsetTimeOptions} data={_sunsetTimeData} />
-              <br />
-              <Line options={equationOfTimeOptions} data={_equationOfTimeData} />
-              <br />
-              <Line options={solarDeclinationOptions} data={_solarDeclinationData} />
-            </section>
-          </>
-        ) : (
-          <div className="p-2">
-            <p>No position selected.</p>
-            <p>
-              Visit the{' '}
-              <Link href="/site-location">
-                <a className="text-blue-600">site locator</a>
-              </Link>{' '}
-              to get solar calculation data.
-            </p>
-          </div>
-        )}
+      <div className="container py-4">
+        <div className="rounded-lg border border-solid border-zinc-400 shadow shadow-zinc-400">
+          {calculator ? (
+            <>
+              <section className="border-b border-solid border-zinc-400 p-2">
+                <p>Position: {position?.toString()}</p>
+                <p>UTC Offset: {calculator.calculateUTCOffset()} hours</p>
+                <label htmlFor="select-year">Select Year: </label>
+                <select
+                  id="select-year"
+                  defaultValue={startYear}
+                  onChange={(e) =>
+                    setStartDate(new Date(parseInt(e.target.value), 0, 1))
+                  }>
+                  {selectYearOptions.map((v) => (
+                    <option value={v} key={v}>
+                      {v}
+                    </option>
+                  ))}
+                </select>
+              </section>
+              <section className="p-2">
+                <Line options={sunriseTimeOptions} data={_sunriseTimeData} />
+                <br />
+                <Line options={solarNoonOptions} data={_solarNoonData} />
+                <br />
+                <Line options={sunsetTimeOptions} data={_sunsetTimeData} />
+                <br />
+                <Line options={equationOfTimeOptions} data={_equationOfTimeData} />
+                <br />
+                <Line options={solarDeclinationOptions} data={_solarDeclinationData} />
+              </section>
+            </>
+          ) : (
+            <div className="p-2">
+              <p>No position selected.</p>
+              <p>
+                Visit the{' '}
+                <Link href="/site-location">
+                  <a className="text-blue-600">site locator</a>
+                </Link>{' '}
+                to get solar calculation data.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
