@@ -33,7 +33,7 @@ const NavLinkMobile = ({ href, children }: React.PropsWithChildren<LinkProps>) =
   );
 };
 
-const Layout: React.FC<{}> = ({ children }) => {
+const Layout: React.FunctionComponent<{ children: React.ReactNode }> = ({ children }) => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   return (
     <div className="bg-zinc-50 text-zinc-900">
