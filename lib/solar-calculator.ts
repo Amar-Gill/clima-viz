@@ -412,6 +412,20 @@ class SolarCalculator {
 
     return this.solarDeclination(apparentLongitudeOfSun, correctedObliquity);
   }
+
+  /**
+   *
+   * @param {Date} date
+   * @returns {number} the maximum elevation of the sun for a given date and position.
+   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/elevation-angle}
+   */
+  public calculateMaxSolarElevationAngle(date: Date): number {
+    const solarDeclinationAngle = this.calculateSolarDeclination(date);
+
+    return this.position.lat > 0
+      ? 90 - this.position.lat + solarDeclinationAngle
+      : 90 + this.position.lat - solarDeclinationAngle;
+  }
 }
 
 export default SolarCalculator;

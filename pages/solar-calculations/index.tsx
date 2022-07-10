@@ -58,6 +58,7 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
   const [solarDeclinationData, setSolarDeclinationData] = useState([]);
   const [sunriseTimeData, setSunriseTimeData] = useState([]);
   const [sunsetTimeData, setSunsetTimeData] = useState([]);
+  const [maxSolarElevationData, setMaxSolarElevationData] = useState([]);
 
   const labels = isLeapYear(startDate) ? labelsLeapYear : labelsYear;
 
@@ -75,6 +76,7 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
         setSolarDeclinationData(data.solarDeclinationData);
         setSunriseTimeData(data.sunriseTimeData);
         setSunsetTimeData(data.sunsetTimeData);
+        setMaxSolarElevationData(data.solarElevationAngleData);
       });
   }, [startDate, position]);
 
@@ -264,6 +266,33 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
     ],
   };
 
+  const solarElevationOptions: ChartOptions<'line'> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: `Max Solar Elevation Angle (degrees) - ${startDate.getUTCFullYear()}`,
+      },
+    },
+  };
+
+  const _solarElevationData: ChartData<'line'> = {
+    labels,
+    datasets: [
+      {
+        label: 'Max Solar Elevation Angle',
+        data: maxSolarElevationData,
+        pointRadius: 0,
+        pointHitRadius: 3,
+        borderWidth: 4,
+        borderColor: 'rgba(0,0,0,0.3)',
+      },
+    ],
+  };
+
   const calculator = position ? new SolarCalculator(position) : undefined;
 
   return (
@@ -294,6 +323,8 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
                 </select>
               </section>
               <section className="p-2">
+                <Line options={solarElevationOptions} data={_solarElevationData} />
+                <br />
                 <Line options={sunriseTimeOptions} data={_sunriseTimeData} />
                 <br />
                 <Line options={solarNoonOptions} data={_solarNoonData} />

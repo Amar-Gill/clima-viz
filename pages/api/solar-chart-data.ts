@@ -8,6 +8,7 @@ type Data = {
   solarDeclinationData: number[];
   sunriseTimeData: number[];
   sunsetTimeData: number[];
+  solarElevationAngleData: number[];
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
@@ -35,5 +36,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
     solarDeclinationData: days.map((date) => calculator.calculateSolarDeclination(date)),
     sunriseTimeData,
     sunsetTimeData,
+    solarElevationAngleData: days.map((date) =>
+      calculator.calculateMaxSolarElevationAngle(date),
+    ),
   });
 }
