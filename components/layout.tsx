@@ -49,7 +49,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <NavLink href="/solar-calculations">Solar Calculations</NavLink>
           </li>
           <li>
-            <NavLink href="/blackbody-model">Black Body Model</NavLink>
+            <NavLink href="/black-body-model">Black Body Model</NavLink>
           </li>
         </ul>
       </nav>
