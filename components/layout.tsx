@@ -51,6 +51,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <li>
             <NavLink href="/black-body-model">Black Body Model</NavLink>
           </li>
+          <li>
+            <NavLink href="/daylight-simulation">Daylight Simulation</NavLink>
+          </li>
         </ul>
       </nav>
       <nav className="min-h-6 flex w-screen justify-between sm:hidden">
