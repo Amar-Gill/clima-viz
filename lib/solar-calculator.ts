@@ -426,6 +426,69 @@ class SolarCalculator {
       ? 90 - this.position.lat + solarDeclinationAngle
       : 90 + this.position.lat - solarDeclinationAngle;
   }
+
+  /**
+   * Context of a single day equations
+   */
+
+  /**
+   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
+   */
+  private localStandardTimeMeridian(date: Date) {
+    // TODO
+    // do we need to calculate based on longitude? See UTC method already implemented.
+    const timezoneOffsetMinutes = date.getTimezoneOffset();
+    const timezoneOffsetHours = timezoneOffsetMinutes / 60;
+  }
+
+  /**
+   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
+   */
+  private timeCorrectionFactor() {
+    // TODO
+  }
+
+  /**
+   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
+   */
+  private localSolarTime() {
+    // @TODO
+  }
+
+  /**
+   *
+   * @param date
+   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
+   */
+  private hourAngle(date: Date) {
+    // TODO
+  }
+
+  /**
+   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
+   */
+  public elevationAngle() {
+    // TODO
+  }
+
+  /**
+   *
+   * @param {Date} date
+   * @returns {number} azimuthAngle (degrees)
+   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/azimuth-angle}
+   */
+  public azimuthAngle(date: Date): number {
+    const solarDeclination = this.calculateSolarDeclination(date);
+
+    return (
+      1 /
+      Math.cos(
+        (Math.sin(solarDeclination) * Math.cos(this.position.lat) -
+          solarDeclination * 1) /
+          Math.cos(this.calculateMaxSolarElevationAngle(date)),
+      )
+    );
+  }
 }
 
 export default SolarCalculator;
