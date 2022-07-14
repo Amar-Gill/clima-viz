@@ -1,12 +1,15 @@
-import { differenceInDays } from 'date-fns';
+import { differenceInDays, getDayOfYear } from 'date-fns';
 import type { LatLngLiteral } from 'leaflet';
-
 class SolarCalculator {
   private baselineReferenceJD = 2415020;
 
   private baselineReferenceDate = new Date('January 1, 1900');
 
   private position: LatLngLiteral;
+
+  private deg2Rad = Math.PI / 180;
+
+  private rad2Deg = 180 / Math.PI;
 
   constructor(position: LatLngLiteral) {
     this.position = position;
@@ -19,39 +22,7 @@ class SolarCalculator {
    * which is an approximate UTC offset based on position.
    */
   public calculateUTCOffset(position = this.position): number {
-    return Math.ceil(position.lng / 15);
-  }
-
-  /**
-   *
-   * @param {number} numDays the number of days as a decimal value
-   * @returns {string} string representing the time of day in the format 'hh:mm:ss'
-   */
-  static convertDaysToTimeString(numDays: number): string {
-    // account for roll over time where dayFraction > 1
-    const singleDayFraction = numDays % 1;
-
-    const hours = singleDayFraction * 24;
-    const truncatedHours = Math.trunc(hours);
-
-    const minutes = (hours - truncatedHours) * 60;
-    const truncatedMinutes = Math.trunc(minutes);
-
-    const seconds = (minutes - truncatedMinutes) * 60;
-    const truncatedSeconds = Math.trunc(seconds);
-
-    const hh =
-      truncatedHours.toString().length === 1 ? `0${truncatedHours}` : truncatedHours;
-    const mm =
-      truncatedMinutes.toString().length === 1
-        ? `0${truncatedMinutes}`
-        : truncatedMinutes;
-    const ss =
-      truncatedSeconds.toString().length === 1
-        ? `0${truncatedSeconds}`
-        : truncatedSeconds;
-
-    return `${hh}:${mm}:${ss}`;
+    return Math.round(position.lng / 15);
   }
 
   /**
@@ -432,43 +403,56 @@ class SolarCalculator {
    */
 
   /**
+   * @param {Date} date
+   * @returns {number} converts given date into local solar time in number of hours, takes into account position
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
    */
-  private localStandardTimeMeridian(date: Date) {
-    // TODO
-    // do we need to calculate based on longitude? See UTC method already implemented.
-    const timezoneOffsetMinutes = date.getTimezoneOffset();
-    const timezoneOffsetHours = timezoneOffsetMinutes / 60;
-  }
+  public localSolarTime(date: Date): number {
+    const localSolarTimeMeridian = 15 * this.calculateUTCOffset();
 
-  /**
-   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
-   */
-  private timeCorrectionFactor() {
-    // TODO
-  }
+    const timeCorrection =
+      4 * (this.position.lng - localSolarTimeMeridian) +
+      this.calculateEquationOfTime(date);
 
-  /**
-   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
-   */
-  private localSolarTime() {
-    // @TODO
+    return date.getHours() + (timeCorrection + date.getMinutes()) / 60;
   }
 
   /**
    *
-   * @param date
+   * @param {Date} date
+   * @returns {number} hour angle in degrees
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
    */
-  private hourAngle(date: Date) {
-    // TODO
+  public hourAngle(date: Date): number {
+    return 15 * (this.localSolarTime(date) - 12);
   }
 
   /**
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
    */
-  public elevationAngle() {
+  private alternativeSolarDeclination() {
     // TODO
+  }
+
+  /**
+   * @param {Date} date
+   * @returns {number} elevation angle in degrees
+   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
+   */
+  public elevationAngle(date: Date): number {
+    const deg2Rad = this.deg2Rad;
+    const solarDeclination = this.calculateSolarDeclination(date);
+    const HRA = this.hourAngle(date);
+
+    return (
+      this.rad2Deg *
+      Math.asin(
+        Math.sin(deg2Rad * solarDeclination) * Math.sin(deg2Rad * this.position.lat) +
+          Math.cos(deg2Rad * solarDeclination) *
+            Math.cos(deg2Rad * this.position.lat) *
+            Math.cos(deg2Rad * HRA),
+      )
+    );
   }
 
   /**
@@ -480,6 +464,7 @@ class SolarCalculator {
   public azimuthAngle(date: Date): number {
     const solarDeclination = this.calculateSolarDeclination(date);
 
+    // TODO
     return (
       1 /
       Math.cos(
