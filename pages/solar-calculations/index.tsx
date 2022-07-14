@@ -13,7 +13,7 @@ import {
 import { isLeapYear, startOfYear } from 'date-fns';
 import SolarCalculator from 'lib/solar-calculator';
 import useStore from 'lib/store';
-import { getChartLabels } from 'lib/utils';
+import { convertDaysToTimeString, getChartLabels } from 'lib/utils';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -93,7 +93,7 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
       tooltip: {
         callbacks: {
           label: function (ctx) {
-            return SolarCalculator.convertDaysToTimeString(ctx.parsed.y);
+            return convertDaysToTimeString(ctx.parsed.y);
           },
         },
       },
@@ -103,7 +103,7 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
         ticks: {
           callback: function (v) {
             if (typeof v === 'string') v = parseInt(v);
-            return SolarCalculator.convertDaysToTimeString(v);
+            return convertDaysToTimeString(v);
           },
         },
       },
@@ -137,7 +137,7 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
       tooltip: {
         callbacks: {
           label: function (ctx) {
-            return SolarCalculator.convertDaysToTimeString(ctx.parsed.y);
+            return convertDaysToTimeString(ctx.parsed.y);
           },
         },
       },
@@ -147,7 +147,7 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
         ticks: {
           callback: function (v) {
             if (typeof v === 'string') v = parseInt(v);
-            return SolarCalculator.convertDaysToTimeString(v);
+            return convertDaysToTimeString(v);
           },
         },
       },
@@ -181,7 +181,7 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
       tooltip: {
         callbacks: {
           label: function (ctx) {
-            return SolarCalculator.convertDaysToTimeString(ctx.parsed.y);
+            return convertDaysToTimeString(ctx.parsed.y);
           },
         },
       },
@@ -191,7 +191,7 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
         ticks: {
           callback: function (v) {
             if (typeof v === 'string') v = parseInt(v);
-            return SolarCalculator.convertDaysToTimeString(v);
+            return convertDaysToTimeString(v);
           },
         },
       },
