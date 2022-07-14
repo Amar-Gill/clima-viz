@@ -30,7 +30,7 @@ class SolarCalculator {
    * @param {Date} date
    * @returns {number} the Julian Day using DublinJD reference date epoch of December 31, 1899, 12:00.
    * The Julian Day is the total number of days since the beginning of Julian Epoch.
-   * https://en.wikipedia.org/wiki/Julian_day
+   * {@link https://en.wikipedia.org/wiki/Julian_day}
    */
   private julianDay(date: Date): number {
     const UTCOffset = this.calculateUTCOffset(this.position);
@@ -45,6 +45,7 @@ class SolarCalculator {
   /**
    * @param {number} julianDay
    * @returns {number} the Julian Century based on the Julian Day.
+   * {@link https://gml.noaa.gov/grad/solcalc/}
    */
   private julianCentury(julianDay: number): number {
     return (julianDay - 2451545) / 36525;
@@ -53,7 +54,8 @@ class SolarCalculator {
   /**
    * @param {number} julianCentury
    * @returns {number} the mean longitude of the Sun in degrees.
-   * https://en.wikipedia.org/wiki/Position_of_the_Sun
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
   private meanLongitudeOfSun(julianCentury: number): number {
     return (280.46646 + julianCentury * (36000.76983 + julianCentury * 0.0003032)) % 360;
@@ -62,7 +64,8 @@ class SolarCalculator {
   /**
    * @param {number} julianCentury
    * @returns {number} the mean anomaly of the Sun in degrees.
-   * https://en.wikipedia.org/wiki/Position_of_the_Sun
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
   private meanAnomalyOfSun(julianCentury: number): number {
     return 357.52911 + julianCentury * (35999.05029 - 0.0001537 * julianCentury);
@@ -71,7 +74,7 @@ class SolarCalculator {
   /**
    * @param {number} julianCentury
    * @returns {number} orbital eccentricity of Earth, a unitless value.
-   * https://en.wikipedia.org/wiki/Position_of_the_Sun
+   * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
   private orbitalEccentricityOfEarth(julianCentury: number): number {
     return 0.016708634 - julianCentury * (0.000042037 + 0.0000001267 * julianCentury);
@@ -80,7 +83,8 @@ class SolarCalculator {
   /**
    * @param {number} julianCentury
    * @returns {number} mean ecliptic obliquity of Earth's orbit in degrees.
-   * https://en.wikipedia.org/wiki/Position_of_the_Sun
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
   private meanEclipticObliquity(julianCentury: number): number {
     return (
@@ -98,7 +102,8 @@ class SolarCalculator {
    * @param {number} meanEclipticObliquity
    * @param {number} julianCentury
    * @returns {number} corrected ecliptic obliquity of Earth's orbit in degrees.
-   * https://en.wikipedia.org/wiki/Position_of_the_Sun
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
   private correctedEclipticObliquity(
     meanEclipticObliquity: number,
@@ -113,7 +118,8 @@ class SolarCalculator {
   /**
    * @param {number} correctedObliquity
    * @returns {number} returns a unitless variation value in obliquity.
-   * https://en.wikipedia.org/wiki/Position_of_the_Sun
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
   private variationY(correctedObliquity: number): number {
     return (
@@ -129,7 +135,8 @@ class SolarCalculator {
    * @param {number} variationY
    * @returns {number} change in minutes of the time of solar noon.
    * It is the difference between apparent solar time and mean solar time in minutes.
-   * https://en.wikipedia.org/wiki/Equation_of_time
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Equation_of_time}
    */
   private equationOfTime(
     meanLongitudeOfSun: number,
@@ -164,7 +171,8 @@ class SolarCalculator {
    * @param meanAnomalyOfSun
    * @returns {number} the angular difference between the actual position Earth in its elliptical orbit
    * and the position it would occupy if its motion were uniform, in a circular orbit of the same period.
-   * https://en.wikipedia.org/wiki/Equation_of_the_center
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Equation_of_the_center}
    */
   private equationOfCenter(julianCentury: number, meanAnomalyOfSun: number): number {
     return (
@@ -181,6 +189,7 @@ class SolarCalculator {
    * @param {number} meanLongitudeOfSun
    * @param {number} equationOfCenter
    * @returns {number} true longitude of the Sun in degrees.
+   * {@link https://gml.noaa.gov/grad/solcalc/}
    */
   private trueLongitudeOfSun(
     meanLongitudeOfSun: number,
@@ -194,6 +203,7 @@ class SolarCalculator {
    * @param {number} julianCentury
    * @param {number} trueLongitudeOfSun
    * @returns {number} apparent longitude of the Sun in degrees.
+   * {@link https://gml.noaa.gov/grad/solcalc/}
    */
   private apparentLongitudeOfSun(
     julianCentury: number,
@@ -212,6 +222,7 @@ class SolarCalculator {
    * @param {number} correctedObliquity
    * @returns {number} the declination of the sun in degrees. The solar declination varies from -23.44° at the (northern hemisphere) winter solstice,
    * through 0° at the vernal equinox, to +23.44° at the summer solstice.
+   * {@link https://gml.noaa.gov/grad/solcalc/}
    */
   private solarDeclination(
     apparentLongitudeOfSun: number,
