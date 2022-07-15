@@ -5,6 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 type Data = {
   elevationAngle: number;
+  azimuthAngle: number;
 };
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const { query } = req;
@@ -26,5 +27,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
 
   res.status(200).json({
     elevationAngle: calculator.elevationAngle(localizedDate),
+    azimuthAngle: calculator.azimuthAngle(localizedDate),
   });
 }

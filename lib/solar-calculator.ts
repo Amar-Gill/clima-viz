@@ -473,16 +473,20 @@ class SolarCalculator {
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/azimuth-angle}
    */
   public azimuthAngle(date: Date): number {
+    const deg2Rad = this.deg2Rad;
     const solarDeclination = this.calculateSolarDeclination(date);
+    const HRA = this.hourAngle(date);
 
-    // TODO
     return (
-      1 /
-      Math.cos(
-        (Math.sin(solarDeclination) * Math.cos(this.position.lat) -
-          solarDeclination * 1) /
-          Math.cos(this.calculateMaxSolarElevationAngle(date)),
-      )
+      360 -
+      this.rad2Deg *
+        Math.acos(
+          (Math.sin(deg2Rad * solarDeclination) * Math.cos(deg2Rad * this.position.lat) -
+            Math.cos(deg2Rad * solarDeclination) *
+              Math.sin(deg2Rad * this.position.lat) *
+              Math.cos(deg2Rad * HRA)) /
+            Math.cos(deg2Rad * this.elevationAngle(date)),
+        )
     );
   }
 }
