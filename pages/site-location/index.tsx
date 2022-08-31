@@ -15,7 +15,7 @@ const SiteLocation: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Ifrit | Site Locator</title>
+        <title>ClimaViz | Site Locator</title>
         <meta name="description" content="Site location using map coordinates" />
         <link
           rel="stylesheet"

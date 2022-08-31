@@ -298,7 +298,7 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
   return (
     <>
       <Head>
-        <title>Ifrit | Solar Calculations</title>
+        <title>ClimaViz | Solar Calculations</title>
         <meta name="description" content="Solar charts based on position." />
       </Head>
       <div className="container py-4">
