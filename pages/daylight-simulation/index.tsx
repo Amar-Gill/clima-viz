@@ -19,7 +19,7 @@ const DaylightSimulation = () => {
   const handleMinutesChange = (e) => {
     const m = Number(e.target.value);
     setMinutes(m);
-    setDate(new Date(date.setMinutes(m)));
+    setDate(new Date(2022, 0, 1, 0, m, 0, 0));
   };
 
   return (
