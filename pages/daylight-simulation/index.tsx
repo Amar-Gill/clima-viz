@@ -16,7 +16,7 @@ const DaylightSimulation = () => {
 
   const calculator = position ? new SolarCalculator(position) : undefined;
 
-  const handleMinutesChange = (e) => {
+  const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const m = Number(e.target.value);
     setMinutes(m);
     setDate(new Date(2022, 0, 1, 0, m, 0, 0));
