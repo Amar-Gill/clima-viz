@@ -1,4 +1,4 @@
-import { differenceInDays, getDayOfYear } from 'date-fns';
+import { differenceInDays } from 'date-fns';
 import type { LatLngLiteral } from 'leaflet';
 class SolarCalculator {
   private baselineReferenceJD = 2415020;
@@ -17,8 +17,8 @@ class SolarCalculator {
 
   /**
    *
-   * @param {LatLng} position The Leaflet js position associated with the calculator instance
-   * @returns {number} number between -14 and 14
+   * @param position The Leaflet js position associated with the calculator instance
+   * @returns number between -14 and 14
    * which is an approximate UTC offset based on position.
    */
   public calculateUTCOffset(position = this.position): number {
@@ -27,8 +27,8 @@ class SolarCalculator {
 
   /**
    *
-   * @param {Date} date
-   * @returns {number} the Julian Day using DublinJD reference date epoch of December 31, 1899, 12:00.
+   * @param date
+   * @returns the Julian Day using DublinJD reference date epoch of December 31, 1899, 12:00.
    * The Julian Day is the total number of days since the beginning of Julian Epoch.
    * {@link https://en.wikipedia.org/wiki/Julian_day}
    */
@@ -43,8 +43,8 @@ class SolarCalculator {
   }
 
   /**
-   * @param {number} julianDay
-   * @returns {number} the Julian Century based on the Julian Day.
+   * @param julianDay
+   * @returns the Julian Century based on the Julian Day.
    * {@link https://gml.noaa.gov/grad/solcalc/}
    */
   private julianCentury(julianDay: number): number {
@@ -52,8 +52,8 @@ class SolarCalculator {
   }
 
   /**
-   * @param {number} julianCentury
-   * @returns {number} the mean longitude of the Sun in degrees.
+   * @param julianCentury
+   * @returns the mean longitude of the Sun in degrees.
    * {@link https://gml.noaa.gov/grad/solcalc/}
    * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
@@ -62,8 +62,8 @@ class SolarCalculator {
   }
 
   /**
-   * @param {number} julianCentury
-   * @returns {number} the mean anomaly of the Sun in degrees.
+   * @param julianCentury
+   * @returns the mean anomaly of the Sun in degrees.
    * {@link https://gml.noaa.gov/grad/solcalc/}
    * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
@@ -72,8 +72,8 @@ class SolarCalculator {
   }
 
   /**
-   * @param {number} julianCentury
-   * @returns {number} orbital eccentricity of Earth, a unitless value.
+   * @param julianCentury
+   * @returns orbital eccentricity of Earth, a unitless value.
    * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
   private orbitalEccentricityOfEarth(julianCentury: number): number {
@@ -81,8 +81,8 @@ class SolarCalculator {
   }
 
   /**
-   * @param {number} julianCentury
-   * @returns {number} mean ecliptic obliquity of Earth's orbit in degrees.
+   * @param julianCentury
+   * @returns mean ecliptic obliquity of Earth's orbit in degrees.
    * {@link https://gml.noaa.gov/grad/solcalc/}
    * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
@@ -99,9 +99,9 @@ class SolarCalculator {
   }
 
   /**
-   * @param {number} meanEclipticObliquity
-   * @param {number} julianCentury
-   * @returns {number} corrected ecliptic obliquity of Earth's orbit in degrees.
+   * @param meanEclipticObliquity
+   * @param julianCentury
+   * @returns corrected ecliptic obliquity of Earth's orbit in degrees.
    * {@link https://gml.noaa.gov/grad/solcalc/}
    * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
@@ -116,8 +116,8 @@ class SolarCalculator {
   }
 
   /**
-   * @param {number} correctedObliquity
-   * @returns {number} returns a unitless variation value in obliquity.
+   * @param correctedObliquity
+   * @returns returns a unitless variation value in obliquity.
    * {@link https://gml.noaa.gov/grad/solcalc/}
    * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
@@ -129,11 +129,11 @@ class SolarCalculator {
   }
 
   /**
-   * @param {number} meanLongitudeOfSun
-   * @param {number} meanAnomalyOfSun
-   * @param {number} orbitalEccentricityOfEarth
-   * @param {number} variationY
-   * @returns {number} change in minutes of the time of solar noon.
+   * @param meanLongitudeOfSun
+   * @param meanAnomalyOfSun
+   * @param orbitalEccentricityOfEarth
+   * @param variationY
+   * @returns change in minutes of the time of solar noon.
    * It is the difference between apparent solar time and mean solar time in minutes.
    * {@link https://gml.noaa.gov/grad/solcalc/}
    * {@link https://en.wikipedia.org/wiki/Equation_of_time}
@@ -169,7 +169,7 @@ class SolarCalculator {
    *
    * @param julianCentury
    * @param meanAnomalyOfSun
-   * @returns {number} the angular difference between the actual position Earth in its elliptical orbit
+   * @returns the angular difference between the actual position Earth in its elliptical orbit
    * and the position it would occupy if its motion were uniform, in a circular orbit of the same period.
    * {@link https://gml.noaa.gov/grad/solcalc/}
    * {@link https://en.wikipedia.org/wiki/Equation_of_the_center}
@@ -186,9 +186,9 @@ class SolarCalculator {
 
   /**
    *
-   * @param {number} meanLongitudeOfSun
-   * @param {number} equationOfCenter
-   * @returns {number} true longitude of the Sun in degrees.
+   * @param meanLongitudeOfSun
+   * @param equationOfCenter
+   * @returns true longitude of the Sun in degrees.
    * {@link https://gml.noaa.gov/grad/solcalc/}
    */
   private trueLongitudeOfSun(
@@ -200,9 +200,9 @@ class SolarCalculator {
 
   /**
    *
-   * @param {number} julianCentury
-   * @param {number} trueLongitudeOfSun
-   * @returns {number} apparent longitude of the Sun in degrees.
+   * @param julianCentury
+   * @param trueLongitudeOfSun
+   * @returns apparent longitude of the Sun in degrees.
    * {@link https://gml.noaa.gov/grad/solcalc/}
    */
   private apparentLongitudeOfSun(
@@ -218,9 +218,9 @@ class SolarCalculator {
 
   /**
    *
-   * @param {number} apparentLongitudeOfSun
-   * @param {number} correctedObliquity
-   * @returns {number} the declination of the sun in degrees. The solar declination varies from -23.44° at the (northern hemisphere) winter solstice,
+   * @param apparentLongitudeOfSun
+   * @param correctedObliquity
+   * @returns the declination of the sun in degrees. The solar declination varies from -23.44° at the (northern hemisphere) winter solstice,
    * through 0° at the vernal equinox, to +23.44° at the summer solstice.
    * {@link https://gml.noaa.gov/grad/solcalc/}
    */
@@ -239,9 +239,9 @@ class SolarCalculator {
 
   /**
    *
-   * @param {number} latitude - number representing latitudinal position to assess.
-   * @param {number} solarDeclination - solar declination angle in degrees.
-   * @returns {number} returns the hour angle at sunrise in degrees.
+   * @param latitude - number representing latitudinal position to assess.
+   * @param solarDeclination - solar declination angle in degrees.
+   * @returns returns the hour angle at sunrise in degrees.
    * @see https://en.wikipedia.org/wiki/Hour_angle
    */
   private hourAngleSunrise(latitude: number, solarDeclination: number) {
@@ -259,9 +259,9 @@ class SolarCalculator {
 
   /**
    *
-   * @param {number} hourAngleSunrise hour angle at sunrise in degrees.
-   * @param {number} solarNoon time of solar noon as a fraction of a day. 0 - 1.
-   * @returns {number} time of sunrise as a fraction of a day. 0 -1.
+   * @param hourAngleSunrise hour angle at sunrise in degrees.
+   * @param solarNoon time of solar noon as a fraction of a day. 0 - 1.
+   * @returns time of sunrise as a fraction of a day. 0 -1.
    */
   private sunriseTime(hourAngleSunrise: number, solarNoon: number) {
     return (solarNoon * 1440 - hourAngleSunrise * 4) / 1440;
@@ -269,9 +269,9 @@ class SolarCalculator {
 
   /**
    *
-   * @param {number} hourAngleSunrise hour angle at sunrise in degrees.
-   * @param {number} solarNoon time of solar noon as a fraction of a day. 0 - 1.
-   * @returns {number} time of sunset as a fraction of a day. 0 - 1.
+   * @param hourAngleSunrise hour angle at sunrise in degrees.
+   * @param solarNoon time of solar noon as a fraction of a day. 0 - 1.
+   * @returns time of sunset as a fraction of a day. 0 - 1.
    */
   private sunsetTime(hourAngleSunrise: number, solarNoon: number) {
     return (solarNoon * 1440 + hourAngleSunrise * 4) / 1440;
@@ -279,8 +279,8 @@ class SolarCalculator {
 
   /**
    *
-   * @param {Date} date the Date to calculate times for.
-   * @returns {Object} object containing sunrise and sunset times as day fractions. 0 - 1.
+   * @param the Date to calculate times for.
+   * @returns object containing sunrise and sunset times as day fractions. 0 - 1.
    */
   public calculateSunriseAndSunset(date: Date) {
     const JD = this.julianDay(date);
@@ -329,8 +329,8 @@ class SolarCalculator {
 
   /**
    *
-   * @param {Date} date date to calculate solar noon at
-   * @returns {number} time of day where solar noon occurs, as floating point number representing fraction of a day
+   * @param date to calculate solar noon at
+   * @returns  time of day where solar noon occurs, as floating point number representing fraction of a day
    */
   public calculateSolarNoon(date: Date) {
     const eqnOfTime = this.calculateEquationOfTime(date);
@@ -341,8 +341,8 @@ class SolarCalculator {
   }
 
   /**
-   * @param {Date} date
-   * @returns {number} the equation of time in minutes for the given date and position.
+   * @param date
+   * @returns  the equation of time in minutes for the given date and position.
    * It is the difference between apparent solar time and mean solar time in minutes.
    * Or the change in minutes of the time of solar noon.
    * https://en.wikipedia.org/wiki/Equation_of_time
@@ -368,8 +368,8 @@ class SolarCalculator {
   }
 
   /**
-   * @param {Date} date
-   * @returns {number} the solar declination of the Sun in degrees for the given date and position.
+   * @param date
+   * @returns  the solar declination of the Sun in degrees for the given date and position.
    * The solar declination varies from -23.44° at the (northern hemisphere) winter solstice,
    * through 0° at the vernal equinox, to +23.44° at the summer solstice.
    */
@@ -397,8 +397,8 @@ class SolarCalculator {
 
   /**
    *
-   * @param {Date} date
-   * @returns {number} the maximum elevation of the sun for a given date and position.
+   * @param date
+   * @returns  the maximum elevation of the sun for a given date and position.
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/elevation-angle}
    */
   public calculateMaxSolarElevationAngle(date: Date): number {
@@ -414,8 +414,8 @@ class SolarCalculator {
    */
 
   /**
-   * @param {Date} date
-   * @returns {number} converts given date into local solar time in number of hours, takes into account position
+   * @param date
+   * @returns converts given date into local solar time in number of hours, takes into account position
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
    */
   public localSolarTime(date: Date): number {
@@ -430,8 +430,8 @@ class SolarCalculator {
 
   /**
    *
-   * @param {Date} date
-   * @returns {number} hour angle in degrees
+   * @param date
+   * @returns hour angle in degrees
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
    */
   public hourAngle(date: Date): number {
@@ -446,8 +446,8 @@ class SolarCalculator {
   }
 
   /**
-   * @param {Date} date
-   * @returns {number} elevation angle in degrees
+   * @param date
+   * @returns elevation angle in degrees
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
    */
   public elevationAngle(date: Date): number {
@@ -468,8 +468,8 @@ class SolarCalculator {
 
   /**
    *
-   * @param {Date} date
-   * @returns {number} azimuthAngle (degrees)
+   * @param date
+   * @returns  azimuthAngle (degrees)
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/azimuth-angle}
    */
   public azimuthAngle(date: Date): number {
