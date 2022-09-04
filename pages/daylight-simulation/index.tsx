@@ -8,9 +8,13 @@ import Link from 'next/Link';
 import { useState } from 'react';
 
 const DaylightSimulation = () => {
-  const [minutes, setMinutes] = useState(720);
-  let d = new Date(2022, 0, 1, 0, minutes, 0, 0);
+  /** Initialize local state */
+  const now = new Date();
+  let m = 720;
+  let d = new Date(now.getUTCFullYear(), 0, 1, 0, m, 0, 0);
   d = new Date(d.toLocaleString('en-US', { timeZone: 'Greenwich' }));
+
+  const [minutes, setMinutes] = useState(m);
   const [date, setDate] = useState(d);
   const { position } = useStore((state) => state);
 
@@ -19,7 +23,8 @@ const DaylightSimulation = () => {
   const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const m = Number(e.target.value);
     setMinutes(m);
-    setDate(new Date(2022, 0, 1, 0, m, 0, 0));
+    const newDate = new Date(2022, 0, 1, 0, m, 0, 0);
+    setDate(new Date(newDate.toLocaleString('en-US', { timeZone: 'Greenwich' })));
   };
 
   return (
@@ -61,14 +66,14 @@ const DaylightSimulation = () => {
               <Line
                 points={[
                   [0, 0, 0],
-                  [0, 0, -5],
+                  [0, 0, 5],
                 ]}
                 rotation={[0, calculator.azimuthAngle(date) * (Math.PI / 180), 0]}
               />
               <Line
                 points={[
                   [0, 0, 0],
-                  [-5, 0, 0],
+                  [5, 0, 0],
                 ]}
                 rotation={[0, 0, calculator.elevationAngle(date) * (Math.PI / 180)]}
               />
