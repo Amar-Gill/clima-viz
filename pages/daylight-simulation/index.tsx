@@ -1,3 +1,5 @@
+import { Line, OrbitControls } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
 import SolarCalculator from 'lib/solar-calculator';
 import useStore from 'lib/store';
 import { convertDaysToTimeString } from 'lib/utils';
@@ -45,6 +47,32 @@ const DaylightSimulation = () => {
           <div>
             <div>elevation: {calculator.elevationAngle(date)}</div>
             <div>azimuth: {calculator.azimuthAngle(date)}</div>
+          </div>
+          <div className="h-screen w-full">
+            <Canvas camera={{ position: [5, 5, 5] }}>
+              <OrbitControls />
+              <gridHelper />
+              <ambientLight />
+              <pointLight intensity={4} position={[10, 8, 6]} />
+              <mesh>
+                <sphereGeometry args={[0.1]} />
+                <meshStandardMaterial color="black" />
+              </mesh>
+              <Line
+                points={[
+                  [0, 0, 0],
+                  [0, 0, -5],
+                ]}
+                rotation={[0, calculator.azimuthAngle(date) * (Math.PI / 180), 0]}
+              />
+              <Line
+                points={[
+                  [0, 0, 0],
+                  [-5, 0, 0],
+                ]}
+                rotation={[0, 0, calculator.elevationAngle(date) * (Math.PI / 180)]}
+              />
+            </Canvas>
           </div>
         </>
       ) : (
