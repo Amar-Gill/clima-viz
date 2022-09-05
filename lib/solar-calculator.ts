@@ -447,7 +447,7 @@ class SolarCalculator {
 
   /**
    * @param date
-   * @returns elevation angle in degrees
+   * @returns elevation angle in radians
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
    */
   public elevationAngle(date: Date): number {
@@ -455,21 +455,18 @@ class SolarCalculator {
     const solarDeclination = this.calculateSolarDeclination(date);
     const HRA = this.hourAngle(date);
 
-    return (
-      this.rad2Deg *
-      Math.asin(
-        Math.sin(deg2Rad * solarDeclination) * Math.sin(deg2Rad * this.position.lat) +
-          Math.cos(deg2Rad * solarDeclination) *
-            Math.cos(deg2Rad * this.position.lat) *
-            Math.cos(deg2Rad * HRA),
-      )
+    return Math.asin(
+      Math.sin(deg2Rad * solarDeclination) * Math.sin(deg2Rad * this.position.lat) +
+        Math.cos(deg2Rad * solarDeclination) *
+          Math.cos(deg2Rad * this.position.lat) *
+          Math.cos(deg2Rad * HRA),
     );
   }
 
   /**
    *
    * @param date
-   * @returns  azimuthAngle (degrees)
+   * @returns  azimuthAngle in radians
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/azimuth-angle}
    */
   public azimuthAngle(date: Date): number {
@@ -478,15 +475,14 @@ class SolarCalculator {
     const HRA = this.hourAngle(date);
 
     return (
-      360 -
-      this.rad2Deg *
-        Math.acos(
-          (Math.sin(deg2Rad * solarDeclination) * Math.cos(deg2Rad * this.position.lat) -
-            Math.cos(deg2Rad * solarDeclination) *
-              Math.sin(deg2Rad * this.position.lat) *
-              Math.cos(deg2Rad * HRA)) /
-            Math.cos(deg2Rad * this.elevationAngle(date)),
-        )
+      2 * Math.PI -
+      Math.acos(
+        (Math.sin(deg2Rad * solarDeclination) * Math.cos(deg2Rad * this.position.lat) -
+          Math.cos(deg2Rad * solarDeclination) *
+            Math.sin(deg2Rad * this.position.lat) *
+            Math.cos(deg2Rad * HRA)) /
+          Math.cos(deg2Rad * this.elevationAngle(date)),
+      )
     );
   }
 }

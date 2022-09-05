@@ -6,6 +6,7 @@ import { convertDaysToTimeString } from 'lib/utils';
 import Head from 'next/Head';
 import Link from 'next/Link';
 import { useState } from 'react';
+import { radToDeg } from 'three/src/math/MathUtils';
 
 const DaylightSimulation = () => {
   /** Initialize local state */
@@ -50,8 +51,8 @@ const DaylightSimulation = () => {
             <label htmlFor="hours">time: {convertDaysToTimeString(minutes / 1440)}</label>
           </div>
           <div>
-            <div>elevation: {calculator.elevationAngle(date)}</div>
-            <div>azimuth: {calculator.azimuthAngle(date)}</div>
+            <div>elevation: {radToDeg(calculator.elevationAngle(date))}</div>
+            <div>azimuth: {radToDeg(calculator.azimuthAngle(date))}</div>
           </div>
           <div className="h-screen w-full">
             <Canvas camera={{ position: [3, 3, 3] }}>
@@ -69,14 +70,14 @@ const DaylightSimulation = () => {
                   [0, 0, 0],
                   [0, 0, 5],
                 ]}
-                rotation={[0, calculator.azimuthAngle(date) * (Math.PI / 180), 0]}
+                rotation={[0, calculator.azimuthAngle(date), 0]}
               />
               <Line
                 points={[
                   [0, 0, 0],
                   [5, 0, 0],
                 ]}
-                rotation={[0, 0, calculator.elevationAngle(date) * (Math.PI / 180)]}
+                rotation={[0, 0, calculator.elevationAngle(date)]}
               />
             </Canvas>
           </div>
