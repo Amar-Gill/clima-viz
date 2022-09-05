@@ -28,6 +28,15 @@ const DaylightSimulation = () => {
     setDate(new Date(newDate.toLocaleString('en-US', { timeZone: 'Greenwich' })));
   };
 
+  // https://mathinsight.org/spherical_coordinates
+  const radius = 5;
+  const zenith = calculator?.zenithAngle(date) ?? 0;
+  const azimuth = calculator?.azimuthAngle(date) ?? 0;
+
+  const x = radius * Math.sin(zenith) * Math.cos(azimuth);
+  const y = radius * Math.sin(zenith) * Math.sin(azimuth);
+  const z = radius * Math.cos(zenith);
+
   return (
     <>
       <Head>
@@ -52,7 +61,7 @@ const DaylightSimulation = () => {
           </div>
           <div>
             <div>elevation: {radToDeg(calculator.elevationAngle(date))}</div>
-            <div>azimuth: {radToDeg(calculator.azimuthAngle(date))}</div>
+            <div>azimuth: {radToDeg(azimuth)}</div>
           </div>
           <div className="h-screen w-full">
             <Canvas camera={{ position: [3, 3, 3] }}>
@@ -68,16 +77,8 @@ const DaylightSimulation = () => {
               <Line
                 points={[
                   [0, 0, 0],
-                  [0, 0, 5],
+                  [x, y, z],
                 ]}
-                rotation={[0, calculator.azimuthAngle(date), 0]}
-              />
-              <Line
-                points={[
-                  [0, 0, 0],
-                  [5, 0, 0],
-                ]}
-                rotation={[0, 0, calculator.elevationAngle(date)]}
               />
             </Canvas>
           </div>
