@@ -54,9 +54,10 @@ const DaylightSimulation = () => {
             <div>azimuth: {calculator.azimuthAngle(date)}</div>
           </div>
           <div className="h-screen w-full">
-            <Canvas camera={{ position: [5, 5, 5] }}>
+            <Canvas camera={{ position: [3, 3, 3] }}>
               <OrbitControls />
               <gridHelper />
+              <axesHelper args={[5]} />
               <ambientLight />
               <pointLight intensity={4} position={[10, 8, 6]} />
               <mesh>
