@@ -448,7 +448,7 @@ class SolarCalculator {
   /**
    * @param date
    * @returns elevation angle in radians
-   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
+   * @see https://www.pveducation.org/pvcdrom/properties-of-sunlight/elevation-angle
    */
   public elevationAngle(date: Date): number {
     const deg2Rad = this.deg2Rad;
@@ -461,6 +461,16 @@ class SolarCalculator {
           Math.cos(deg2Rad * this.position.lat) *
           Math.cos(deg2Rad * HRA),
     );
+  }
+
+  /**
+   *
+   * @param date
+   * @returns zenith angle in radians
+   * @see https://www.pveducation.org/pvcdrom/properties-of-sunlight/elevation-angle
+   */
+  public zenithAngle(date: Date): number {
+    return Math.PI / 2 - this.elevationAngle(date);
   }
 
   /**
