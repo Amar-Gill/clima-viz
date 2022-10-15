@@ -12,6 +12,7 @@ import { radToDeg } from 'three/src/math/MathUtils';
 const DaylightSimulation = () => {
   /** Initialize local state */
   const [minutes, setMinutes] = useState(0);
+  const [isDST, setIsDST] = useState(false);
   const { position } = useStore((state) => state);
 
   const calculator = position ? new SolarCalculator(position) : undefined;
@@ -21,14 +22,24 @@ const DaylightSimulation = () => {
     setMinutes(m);
   };
 
+  const handleDSTChange = () => {
+    setIsDST(!isDST);
+  };
+
   // hard code dayOfYear to be present day for now
   const dayOfYear = getDayOfYear(new Date());
 
   // https://mathinsight.org/spherical_coordinates
   const radius = 5;
-  const zenith = calculator?.zenithAngle(dayOfYear, minutes) ?? 0;
-  const azimuth = calculator?.azimuthAngle(dayOfYear, minutes) ?? 0;
+  const zenith = calculator?.zenithAngle(dayOfYear, isDST ? minutes - 60 : minutes) ?? 0;
+  const azimuth =
+    calculator?.azimuthAngle(dayOfYear, isDST ? minutes - 60 : minutes) ?? 0;
 
+  /**
+   * defualt ThreeJS coordinate system is different from typical cartesion coordinates
+   * for ThreeJS x and z are on the flat horizontal plane while y axis points directly up
+   * typical cartesion coordinates have x and y axes on flat horizontal plane adn z pointing up
+   */
   const x = radius * Math.sin(zenith) * Math.cos(azimuth);
   const y = radius * Math.cos(zenith);
   const z = radius * Math.sin(zenith) * Math.sin(azimuth);
@@ -56,10 +67,22 @@ const DaylightSimulation = () => {
             <label htmlFor="minutes">
               time: {convertDaysToTimeString(minutes / 1440)}
             </label>
+            <div>
+              <label htmlFor="isDST">Is Daylight Savings Time? {isDST}</label>
+              <input
+                name="isDST"
+                type="checkbox"
+                checked={isDST}
+                onChange={handleDSTChange}
+              />
+            </div>
           </div>
           <div>
             <div>
-              elevation: {radToDeg(calculator.elevationAngle(dayOfYear, minutes))}
+              elevation:{' '}
+              {radToDeg(
+                calculator.elevationAngle(dayOfYear, isDST ? minutes - 60 : minutes),
+              )}
             </div>
             <div>azimuth: {radToDeg(azimuth)}</div>
             <div>utc offset: {calculator.calculateUTCOffset()}</div>
