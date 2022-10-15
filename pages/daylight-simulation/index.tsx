@@ -1,30 +1,29 @@
 import { Line, OrbitControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { getDayOfYear } from 'date-fns';
+import { useControls } from 'leva';
 import SolarCalculator from 'lib/solar-calculator';
 import useStore from 'lib/store';
 import { convertDaysToTimeString } from 'lib/utils';
 import Head from 'next/Head';
 import Link from 'next/Link';
-import { useState } from 'react';
 import { radToDeg } from 'three/src/math/MathUtils';
 
 const DaylightSimulation = () => {
-  /** Initialize local state */
-  const [minutes, setMinutes] = useState(0);
-  const [isDST, setIsDST] = useState(false);
+  const { minutes, isDST } = useControls({
+    minutes: {
+      value: 0,
+      min: 0,
+      max: 1440,
+      step: 10,
+    },
+    isDST: {
+      value: false,
+    },
+  });
   const { position } = useStore((state) => state);
 
   const calculator = position ? new SolarCalculator(position) : undefined;
-
-  const handleMinutesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const m = Number(e.target.value);
-    setMinutes(m);
-  };
-
-  const handleDSTChange = () => {
-    setIsDST(!isDST);
-  };
 
   // hard code dayOfYear to be present day for now
   const dayOfYear = getDayOfYear(new Date());
@@ -38,7 +37,7 @@ const DaylightSimulation = () => {
   /**
    * defualt ThreeJS coordinate system is different from typical cartesion coordinates
    * for ThreeJS x and z are on the flat horizontal plane while y axis points directly up
-   * typical cartesion coordinates have x and y axes on flat horizontal plane adn z pointing up
+   * typical cartesion coordinates have x and y axes on flat horizontal plane and z pointing up
    */
   const x = radius * Math.sin(zenith) * Math.cos(azimuth);
   const y = radius * Math.cos(zenith);
@@ -51,33 +50,10 @@ const DaylightSimulation = () => {
       </Head>
       {calculator ? (
         <>
-          <p>
-            Position: {position?.lat}, {position?.lng}
-          </p>
           <div>
-            <input
-              type="range"
-              min="0"
-              max="1440"
-              step="10"
-              name="minutes"
-              value={minutes}
-              onChange={handleMinutesChange}
-            />
-            <label htmlFor="minutes">
-              time: {convertDaysToTimeString(minutes / 1440)}
-            </label>
-            <div>
-              <label htmlFor="isDST">Is Daylight Savings Time? {isDST}</label>
-              <input
-                name="isDST"
-                type="checkbox"
-                checked={isDST}
-                onChange={handleDSTChange}
-              />
-            </div>
-          </div>
-          <div>
+            <p>
+              Position: {position?.lat}, {position?.lng}
+            </p>
             <div>
               elevation:{' '}
               {radToDeg(
@@ -85,10 +61,6 @@ const DaylightSimulation = () => {
               )}
             </div>
             <div>azimuth: {radToDeg(azimuth)}</div>
-            <div>utc offset: {calculator.calculateUTCOffset()}</div>
-            <div>x: {x}</div>
-            <div>y: {y}</div>
-            <div>z: {z}</div>
           </div>
           <div className="h-screen w-full">
             <Canvas camera={{ position: [3, 3, 3] }}>
