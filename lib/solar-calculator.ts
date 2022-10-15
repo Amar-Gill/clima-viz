@@ -512,16 +512,15 @@ class SolarCalculator {
     const solarDeclination = this.alternateSolarDeclination(dayOfYear);
     const HRA = this.hourAngle(dayOfYear, elapsedMinutes);
 
-    return (
-      2 * Math.PI -
-      Math.acos(
-        (Math.sin(deg2Rad * solarDeclination) * Math.cos(deg2Rad * this.position.lat) -
-          Math.cos(deg2Rad * solarDeclination) *
-            Math.sin(deg2Rad * this.position.lat) *
-            Math.cos(deg2Rad * HRA)) /
-          Math.cos(this.elevationAngle(dayOfYear, elapsedMinutes)),
-      )
+    const az = Math.acos(
+      (Math.sin(deg2Rad * solarDeclination) * Math.cos(deg2Rad * this.position.lat) -
+        Math.cos(deg2Rad * solarDeclination) *
+          Math.sin(deg2Rad * this.position.lat) *
+          Math.cos(deg2Rad * HRA)) /
+        Math.cos(this.elevationAngle(dayOfYear, elapsedMinutes)),
     );
+
+    return HRA > 0 ? 2 * Math.PI - az : az;
   }
 }
 

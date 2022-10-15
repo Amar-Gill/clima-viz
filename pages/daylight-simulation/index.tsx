@@ -30,8 +30,8 @@ const DaylightSimulation = () => {
   const azimuth = calculator?.azimuthAngle(dayOfYear, minutes) ?? 0;
 
   const x = radius * Math.sin(zenith) * Math.cos(azimuth);
-  const y = radius * Math.sin(zenith) * Math.sin(azimuth);
-  const z = radius * Math.cos(zenith);
+  const y = radius * Math.cos(zenith);
+  const z = radius * Math.sin(zenith) * Math.sin(azimuth);
 
   return (
     <>
