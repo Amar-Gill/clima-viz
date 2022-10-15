@@ -53,7 +53,9 @@ const DaylightSimulation = () => {
               value={minutes}
               onChange={handleMinutesChange}
             />
-            <label htmlFor="hours">time: {convertDaysToTimeString(minutes / 1440)}</label>
+            <label htmlFor="minutes">
+              time: {convertDaysToTimeString(minutes / 1440)}
+            </label>
           </div>
           <div>
             <div>
