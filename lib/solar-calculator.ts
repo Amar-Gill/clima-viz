@@ -1,4 +1,4 @@
-import { differenceInDays } from 'date-fns';
+import { differenceInDays, getDayOfYear } from 'date-fns';
 import type { LatLngLiteral } from 'leaflet';
 class SolarCalculator {
   private baselineReferenceJD = 2415020;
@@ -10,6 +10,8 @@ class SolarCalculator {
   private deg2Rad = Math.PI / 180;
 
   private rad2Deg = 180 / Math.PI;
+
+  private radPerDay = (2 * Math.PI) / 365;
 
   constructor(position: LatLngLiteral) {
     this.position = position;
@@ -415,15 +417,30 @@ class SolarCalculator {
 
   /**
    * @param date
+   * @returns number representing equation of time in minutes
+   * @description simplified equation for EOT
+   * tested = true
+   */
+  alternateEquationOfTime(date: Date): number {
+    const dayOfYear = getDayOfYear(date);
+    const B = this.radPerDay * (dayOfYear - 81); // first term is radians / day the earth orbits around sun
+    return 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
+  }
+
+  /**
+   * @param date
    * @returns converts given date into local solar time in number of hours, takes into account position
+   * decimal fraction represents the fraction of an hour
+   * tested = true
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
    */
   public localSolarTime(date: Date): number {
+    // TODO this can be saved as a constant outside the method
     const localSolarTimeMeridian = 15 * this.calculateUTCOffset();
 
     const timeCorrection =
       4 * (this.position.lng - localSolarTimeMeridian) +
-      this.calculateEquationOfTime(date);
+      this.alternateEquationOfTime(date);
 
     return date.getHours() + (timeCorrection + date.getMinutes()) / 60;
   }
@@ -440,19 +457,23 @@ class SolarCalculator {
 
   /**
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
+   * tested = true
    */
-  private alternativeSolarDeclination() {
-    // TODO
+  public alternateSolarDeclination(date: Date): number {
+    const dayOfYear = getDayOfYear(date);
+    const x = this.deg2Rad * 23.45;
+    return x * this.rad2Deg * Math.sin(this.radPerDay * (dayOfYear - 81));
   }
 
   /**
    * @param date
    * @returns elevation angle in radians
    * @see https://www.pveducation.org/pvcdrom/properties-of-sunlight/elevation-angle
+   * tested = true
    */
   public elevationAngle(date: Date): number {
     const deg2Rad = this.deg2Rad;
-    const solarDeclination = this.calculateSolarDeclination(date);
+    const solarDeclination = this.alternateSolarDeclination(date);
     const HRA = this.hourAngle(date);
 
     return Math.asin(
@@ -478,10 +499,11 @@ class SolarCalculator {
    * @param date
    * @returns  azimuthAngle in radians
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/azimuth-angle}
+   * tested = true
    */
   public azimuthAngle(date: Date): number {
     const deg2Rad = this.deg2Rad;
-    const solarDeclination = this.calculateSolarDeclination(date);
+    const solarDeclination = this.alternateSolarDeclination(date);
     const HRA = this.hourAngle(date);
 
     return (
@@ -491,7 +513,7 @@ class SolarCalculator {
           Math.cos(deg2Rad * solarDeclination) *
             Math.sin(deg2Rad * this.position.lat) *
             Math.cos(deg2Rad * HRA)) /
-          Math.cos(deg2Rad * this.elevationAngle(date)),
+          Math.cos(this.elevationAngle(date)),
       )
     );
   }
