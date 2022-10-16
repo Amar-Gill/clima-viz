@@ -419,7 +419,6 @@ class SolarCalculator {
    * @param dayOfYear - the number between 1-366 representing which day of the year to calculate value for
    * @returns number representing equation of time in minutes
    * @description simplified equation for EOT
-   * tested = true
    */
   public alternateEquationOfTime(dayOfYear: number): number {
     const B = this.radPerDay * (dayOfYear - 81); // first term is radians / day the earth orbits around sun
@@ -431,7 +430,6 @@ class SolarCalculator {
    * @param elapsedMinutes - the number of minutes elapsed on the day to calcualate value for
    * @returns converts given date into local solar time in number of hours, takes into account position
    * decimal fraction represents the fraction of an hour
-   * tested = true
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
    */
   public localSolarTime(dayOfYear: number, elapsedMinutes: number): number {
@@ -452,20 +450,17 @@ class SolarCalculator {
    * @returns hour angle in degrees
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
    */
-  // new api: day number, elapsed minutes
   public hourAngle(dayOfYear: number, elapsedMinutes: number): number {
     return 15 * (this.localSolarTime(dayOfYear, elapsedMinutes) - 12);
   }
 
   /**
    * @param dayOfYear - the number between 1-366 representing which day of the year to calculate value for
+   * @returns solar declination in degrees
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
-   * tested = true
    */
-  // new api: day number
   public alternateSolarDeclination(dayOfYear: number): number {
-    const x = this.deg2Rad * 23.45;
-    return x * this.rad2Deg * Math.sin(this.radPerDay * (dayOfYear - 81));
+    return 23.45 * Math.sin(this.radPerDay * (dayOfYear - 81));
   }
 
   /**
@@ -473,7 +468,6 @@ class SolarCalculator {
    * @param elapsedMinutes - the number of minutes elapsed on the day to calcualate value for
    * @returns elevation angle in radians
    * @see https://www.pveducation.org/pvcdrom/properties-of-sunlight/elevation-angle
-   * tested = true
    */
   public elevationAngle(dayOfYear: number, elapsedMinutes: number): number {
     const deg2Rad = this.deg2Rad;
