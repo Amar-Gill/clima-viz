@@ -17,6 +17,7 @@ const Home: NextPage = () => {
             <li>project site selection</li>
             <li>solar charts based on geographic position</li>
             <li>black body model visualizer</li>
+            <li>solar position visualizer</li>
           </ul>
         </div>
       </div>
