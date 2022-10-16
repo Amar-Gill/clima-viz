@@ -20,7 +20,7 @@ const RedirectCard = () => {
   );
 };
 
-const DaylightSimPage = () => {
+const SolarPositionPage = () => {
   const { position } = useStore((state) => state);
   return (
     <>
@@ -32,4 +32,4 @@ const DaylightSimPage = () => {
   );
 };
 
-export default DaylightSimPage;
+export default SolarPositionPage;
