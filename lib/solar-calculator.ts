@@ -1,5 +1,8 @@
-import { differenceInDays, getDayOfYear } from 'date-fns';
+import { differenceInDays } from 'date-fns';
 import type { LatLngLiteral } from 'leaflet';
+
+import { calculateUTCOffsetForLng } from './utils';
+
 class SolarCalculator {
   private baselineReferenceJD = 2415020;
 
@@ -13,18 +16,11 @@ class SolarCalculator {
 
   private radPerDay = (2 * Math.PI) / 365;
 
+  private UTCOffset: number;
+
   constructor(position: LatLngLiteral) {
     this.position = position;
-  }
-
-  /**
-   *
-   * @param position The Leaflet js position associated with the calculator instance
-   * @returns number between -14 and 14
-   * which is an approximate UTC offset based on position.
-   */
-  public calculateUTCOffset(position = this.position): number {
-    return Math.round(position.lng / 15);
+    this.UTCOffset = calculateUTCOffsetForLng(position.lng);
   }
 
   /**
@@ -35,12 +31,10 @@ class SolarCalculator {
    * {@link https://en.wikipedia.org/wiki/Julian_day}
    */
   private julianDay(date: Date): number {
-    const UTCOffset = this.calculateUTCOffset(this.position);
-
     const deltaDays = differenceInDays(date, this.baselineReferenceDate);
 
     return (
-      this.baselineReferenceJD + deltaDays + 0.5 + (date.getHours() + UTCOffset) / 24
+      this.baselineReferenceJD + deltaDays + 0.5 + (date.getHours() + this.UTCOffset) / 24
     );
   }
 
@@ -317,7 +311,7 @@ class SolarCalculator {
     const eqnOfTime = this.equationOfTime(meanLong, meanAnom, orbitalEccentricity, varY);
 
     const solarNoon =
-      (720 - 4 * this.position.lng - eqnOfTime + this.calculateUTCOffset() * 60) / 1440;
+      (720 - 4 * this.position.lng - eqnOfTime + this.UTCOffset * 60) / 1440;
 
     const sunriseTime = this.sunriseTime(hourAngleSunrise, solarNoon);
 
@@ -337,9 +331,7 @@ class SolarCalculator {
   public calculateSolarNoon(date: Date) {
     const eqnOfTime = this.calculateEquationOfTime(date);
 
-    return (
-      (720 - 4 * this.position.lng - eqnOfTime + this.calculateUTCOffset() * 60) / 1440
-    );
+    return (720 - 4 * this.position.lng - eqnOfTime + this.UTCOffset * 60) / 1440;
   }
 
   /**
@@ -428,13 +420,17 @@ class SolarCalculator {
   /**
    * @param dayOfYear - the number between 1-366 representing which day of the year to calculate value for
    * @param elapsedMinutes - the number of minutes elapsed on the day to calcualate value for
+   * @param UTCOffset - number between -14 - 14 representing the timezone of the location
    * @returns converts given date into local solar time in number of hours, takes into account position
    * decimal fraction represents the fraction of an hour
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
    */
-  public localSolarTime(dayOfYear: number, elapsedMinutes: number): number {
-    // TODO this can be saved as a constant outside the method
-    const localSolarTimeMeridian = 15 * this.calculateUTCOffset();
+  public localSolarTime(
+    dayOfYear: number,
+    elapsedMinutes: number,
+    UTCOffset = this.UTCOffset,
+  ): number {
+    const localSolarTimeMeridian = 15 * UTCOffset;
 
     const timeCorrection =
       4 * (this.position.lng - localSolarTimeMeridian) +
@@ -447,11 +443,16 @@ class SolarCalculator {
    *
    * @param dayOfYear - the number between 1-366 representing which day of the year to calculate value for
    * @param elapsedMinutes - the number of minutes elapsed on the day to calcualate value for
+   * @param UTCOffset - number between -14 - 14 representing the timezone of the location
    * @returns hour angle in degrees
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
    */
-  public hourAngle(dayOfYear: number, elapsedMinutes: number): number {
-    return 15 * (this.localSolarTime(dayOfYear, elapsedMinutes) - 12);
+  public hourAngle(
+    dayOfYear: number,
+    elapsedMinutes: number,
+    UTCOffset = this.UTCOffset,
+  ): number {
+    return 15 * (this.localSolarTime(dayOfYear, elapsedMinutes, UTCOffset) - 12);
   }
 
   /**
@@ -517,10 +518,20 @@ class SolarCalculator {
     return HRA > 0 ? 2 * Math.PI - az : az;
   }
 
-  public solarPosition(dayOfYear: number, elapsedMinutes: number) {
+  /**
+   * @param dayOfYear - number between 1-366 representing what day of the year to calculate value for
+   * @param elapsedMinutes - number between 0 - 1440 representing exact time of day to calculate value for
+   * @param UTCOffset - number between -14 - 14 representing the timezone or timezone offset from UTC greenwich time
+   * @returns object containing solar position angles (elevation, zenith, azimuth)
+   */
+  public solarPosition(
+    dayOfYear: number,
+    elapsedMinutes: number,
+    UTCOffset = this.UTCOffset,
+  ) {
     const deg2Rad = this.deg2Rad;
     const solarDeclination = this.alternateSolarDeclination(dayOfYear);
-    const HRA = this.hourAngle(dayOfYear, elapsedMinutes);
+    const HRA = this.hourAngle(dayOfYear, elapsedMinutes, UTCOffset);
 
     const elevation = Math.asin(
       Math.sin(deg2Rad * solarDeclination) * Math.sin(deg2Rad * this.position.lat) +

@@ -12,7 +12,7 @@ type SolarPositionProps = {
 };
 
 const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
-  const { minutes, dayOfYear, isDST } = useControls({
+  const { minutes, dayOfYear, isDST, UTCOffset } = useControls({
     minutes: {
       value: 0,
       min: 0,
@@ -52,6 +52,7 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
   const { elevation, zenith, azimuth } = calculator.solarPosition(
     dayOfYear,
     isDST ? minutes - 60 : minutes,
+    UTCOffset,
   );
   /**
    * defualt ThreeJS coordinate system is different from typical cartesian coordinates
