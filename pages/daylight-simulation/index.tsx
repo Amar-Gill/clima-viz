@@ -3,6 +3,23 @@ import useStore from 'lib/store';
 import Head from 'next/head';
 import Link from 'next/link';
 
+const RedirectCard = () => {
+  return (
+    <div className="container py-4">
+      <div className="rounded-lg border border-solid border-zinc-400 p-2 shadow shadow-zinc-400">
+        <p>No position selected.</p>
+        <p>
+          Visit the{' '}
+          <Link href="/site-location">
+            <a className="text-blue-600">site locator</a>
+          </Link>{' '}
+          to get solar position data.
+        </p>
+      </div>
+    </div>
+  );
+};
+
 const DaylightSimPage = () => {
   const { position } = useStore((state) => state);
   return (
@@ -10,20 +27,7 @@ const DaylightSimPage = () => {
       <Head>
         <title>ClimaViz | Daylight Simulation</title>
       </Head>
-      {position ? (
-        <SolarPosition position={position} />
-      ) : (
-        <div className="p-2">
-          <p>No position selected.</p>
-          <p>
-            Visit the{' '}
-            <Link href="/site-location">
-              <a className="text-blue-600">site locator</a>
-            </Link>{' '}
-            to get solar calculation data.
-          </p>
-        </div>
-      )}
+      {position ? <SolarPosition position={position} /> : <RedirectCard />}
     </>
   );
 };
