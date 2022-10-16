@@ -522,6 +522,35 @@ class SolarCalculator {
 
     return HRA > 0 ? 2 * Math.PI - az : az;
   }
+
+  public solarPosition(dayOfYear: number, elapsedMinutes: number) {
+    const deg2Rad = this.deg2Rad;
+    const solarDeclination = this.alternateSolarDeclination(dayOfYear);
+    const HRA = this.hourAngle(dayOfYear, elapsedMinutes);
+
+    const elevation = Math.asin(
+      Math.sin(deg2Rad * solarDeclination) * Math.sin(deg2Rad * this.position.lat) +
+        Math.cos(deg2Rad * solarDeclination) *
+          Math.cos(deg2Rad * this.position.lat) *
+          Math.cos(deg2Rad * HRA),
+    );
+
+    const zenith = Math.PI / 2 - elevation;
+
+    const az = Math.acos(
+      (Math.sin(deg2Rad * solarDeclination) * Math.cos(deg2Rad * this.position.lat) -
+        Math.cos(deg2Rad * solarDeclination) *
+          Math.sin(deg2Rad * this.position.lat) *
+          Math.cos(deg2Rad * HRA)) /
+        Math.cos(elevation),
+    );
+
+    return {
+      elevation,
+      zenith,
+      azimuth: HRA > 0 ? 2 * Math.PI - az : az,
+    };
+  }
 }
 
 export default SolarCalculator;

@@ -48,9 +48,11 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
 
   // https://mathinsight.org/spherical_coordinates
   const radius = 8;
-  const zenith = calculator.zenithAngle(dayOfYear, isDST ? minutes - 60 : minutes);
-  const azimuth = calculator.azimuthAngle(dayOfYear, isDST ? minutes - 60 : minutes);
 
+  const { elevation, zenith, azimuth } = calculator.solarPosition(
+    dayOfYear,
+    isDST ? minutes - 60 : minutes,
+  );
   /**
    * defualt ThreeJS coordinate system is different from typical cartesian coordinates
    * for ThreeJS x and z are on the flat horizontal plane while y axis points directly up
@@ -63,10 +65,7 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
   return (
     <>
       <div>
-        <p>
-          elevation:{' '}
-          {radToDeg(calculator.elevationAngle(dayOfYear, isDST ? minutes - 60 : minutes))}
-        </p>
+        <p>elevation: {radToDeg(elevation)}</p>
         <p>azimuth: {radToDeg(azimuth)}</p>
         <p>Time: {convertDaysToTimeString(minutes / 1440)}</p>
       </div>
