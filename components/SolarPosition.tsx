@@ -12,12 +12,18 @@ type SolarPositionProps = {
 };
 
 const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
-  const { minutes, isDST } = useControls({
+  const { minutes, dayOfYear, isDST } = useControls({
     minutes: {
       value: 0,
       min: 0,
       max: 1440,
       step: 10,
+    },
+    dayOfYear: {
+      value: getDayOfYear(new Date()),
+      min: 1,
+      max: 365,
+      step: 1,
     },
     isDST: {
       value: false,
@@ -39,9 +45,6 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
   });
 
   const calculator = new SolarCalculator(position);
-
-  // hard code dayOfYear to be present day for now
-  const dayOfYear = getDayOfYear(new Date());
 
   // https://mathinsight.org/spherical_coordinates
   const radius = 8;
