@@ -1,4 +1,4 @@
-import { Line, OrbitControls } from '@react-three/drei';
+import { OrbitControls, Plane, Sphere } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { getDayOfYear } from 'date-fns';
 import { LatLng } from 'leaflet';
@@ -30,7 +30,7 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
   const dayOfYear = getDayOfYear(new Date());
 
   // https://mathinsight.org/spherical_coordinates
-  const radius = 5;
+  const radius = 8;
   const zenith = calculator.zenithAngle(dayOfYear, isDST ? minutes - 60 : minutes);
   const azimuth = calculator.azimuthAngle(dayOfYear, isDST ? minutes - 60 : minutes);
 
@@ -57,22 +57,20 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
         <p>Time: {convertDaysToTimeString(minutes / 1440)}</p>
       </div>
       <div className="h-screen w-full">
-        <Canvas camera={{ position: [3, 3, 3] }}>
+        <Canvas camera={{ position: [9, 9, 9] }}>
           <OrbitControls />
-          <gridHelper />
+          <Plane args={[64, 64]} rotation={[-Math.PI / 2, 0, 0]}>
+            <meshPhongMaterial color="#4b7842" />
+          </Plane>
+          <Sphere args={[0.1]} position={[x, y, z]}>
+            <meshBasicMaterial color="#ac6c25" />
+          </Sphere>
+          <Sphere args={[0.1]}>
+            <meshBasicMaterial color="black" />
+          </Sphere>
           <axesHelper args={[5]} />
-          <ambientLight />
-          <pointLight intensity={4} position={[10, 8, 6]} />
-          <mesh>
-            <sphereGeometry args={[0.1]} />
-            <meshStandardMaterial color="black" />
-          </mesh>
-          <Line
-            points={[
-              [0, 0, 0],
-              [x, y, z],
-            ]}
-          />
+          <ambientLight args={['white', 0.1]} />
+          <pointLight intensity={1.5} position={[x, y, z]} />
         </Canvas>
       </div>
     </>
