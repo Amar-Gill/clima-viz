@@ -1,7 +1,7 @@
 import SolarPosition from 'components/SolarPosition';
 import useStore from 'lib/store';
 import Head from 'next/head';
-import Link from 'next/Link';
+import Link from 'next/link';
 
 const DaylightSimPage = () => {
   const { position } = useStore((state) => state);
