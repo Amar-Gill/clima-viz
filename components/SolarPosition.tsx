@@ -7,7 +7,11 @@ import SolarCalculator from 'lib/solar-calculator';
 import { convertDaysToTimeString } from 'lib/utils';
 import { radToDeg } from 'three/src/math/MathUtils';
 
-const SolarPosition = (props: { position: LatLng }) => {
+type SolarPositionProps = {
+  position: LatLng;
+};
+
+const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
   const { minutes, isDST } = useControls({
     minutes: {
       value: 0,
@@ -20,7 +24,7 @@ const SolarPosition = (props: { position: LatLng }) => {
     },
   });
 
-  const calculator = new SolarCalculator(props.position ?? { lat: 0, lng: 0 });
+  const calculator = new SolarCalculator(position);
 
   // hard code dayOfYear to be present day for now
   const dayOfYear = getDayOfYear(new Date());
@@ -43,7 +47,7 @@ const SolarPosition = (props: { position: LatLng }) => {
     <>
       <div>
         <p>
-          Position: {props.position?.lat}, {props.position?.lng}
+          Position: {position.lat}, {position.lng}
         </p>
         <p>
           elevation:{' '}
