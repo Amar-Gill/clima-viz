@@ -1,4 +1,4 @@
-import { OrbitControls, Plane, Sphere } from '@react-three/drei';
+import { Html, OrbitControls, Plane, Sphere } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { getDayOfYear } from 'date-fns';
 import { LatLng } from 'leaflet';
@@ -63,13 +63,15 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
 
   return (
     <>
-      <div>
-        <p>elevation: {radToDeg(elevation)}</p>
-        <p>azimuth: {radToDeg(azimuth)}</p>
-        <p>Time: {convertDaysToTimeString(minutes / 1440)}</p>
-      </div>
       <div className="h-screen w-full">
         <Canvas camera={{ position: [9, 9, 9] }}>
+          <Html calculatePosition={() => [8, 8, 0]}>
+            <div className="w-40 rounded-lg border border-solid border-zinc-400 bg-zinc-50 p-2 shadow shadow-zinc-400">
+              <p>Elevation: {radToDeg(elevation).toFixed(2)} °</p>
+              <p>Azimuth: {radToDeg(azimuth).toFixed(2)} °</p>
+              <p>Time: {convertDaysToTimeString(minutes / 1440)}</p>
+            </div>
+          </Html>
           <OrbitControls />
           <Plane args={[64, 64]} rotation={[-Math.PI / 2, 0, 0]}>
             <meshPhongMaterial color="#4b7842" />
