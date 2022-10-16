@@ -74,10 +74,18 @@ export function convertDaysToTimeString(numDays: number): string {
  * @returns {Date}
  * {@link https://stackoverflow.com/questions/10087819/convert-date-to-another-timezone-in-javascript}
  */
-export function convertTZ(date: Date, tzString: string) {
+export function convertTZ(date: Date, tzString: string): Date {
   return new Date(
     (typeof date === 'string' ? new Date(date) : date).toLocaleString('en-US', {
       timeZone: tzString,
     }),
   );
+}
+
+/**
+ * @param longitude
+ * @returns number between -14 and 14 representing UTC offset using strict geometric calculation based on longitude alone
+ */
+export function calculateUTCOffsetForLng(longitude: number): number {
+  return Math.round(longitude / 15);
 }

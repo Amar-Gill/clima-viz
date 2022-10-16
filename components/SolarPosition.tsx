@@ -4,7 +4,7 @@ import { getDayOfYear } from 'date-fns';
 import { LatLng } from 'leaflet';
 import { useControls } from 'leva';
 import SolarCalculator from 'lib/solar-calculator';
-import { convertDaysToTimeString } from 'lib/utils';
+import { calculateUTCOffsetForLng, convertDaysToTimeString } from 'lib/utils';
 import { radToDeg } from 'three/src/math/MathUtils';
 
 type SolarPositionProps = {
@@ -21,6 +21,20 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
     },
     isDST: {
       value: false,
+    },
+    latitude: {
+      value: position.lat,
+      disabled: true,
+    },
+    longitude: {
+      value: position.lng,
+      disabled: true,
+    },
+    UTCOffset: {
+      value: calculateUTCOffsetForLng(position.lng),
+      min: -14,
+      max: 14,
+      step: 1,
     },
   });
 
@@ -46,9 +60,6 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
   return (
     <>
       <div>
-        <p>
-          Position: {position.lat}, {position.lng}
-        </p>
         <p>
           elevation:{' '}
           {radToDeg(calculator.elevationAngle(dayOfYear, isDST ? minutes - 60 : minutes))}
