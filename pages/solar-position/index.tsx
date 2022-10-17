@@ -25,7 +25,7 @@ const SolarPositionPage = () => {
   return (
     <>
       <Head>
-        <title>ClimaViz | Daylight Simulation</title>
+        <title>ClimaViz | Solar Position</title>
       </Head>
       {position ? <SolarPosition position={position} /> : <RedirectCard />}
     </>
