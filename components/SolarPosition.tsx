@@ -25,14 +25,6 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
       max: 365,
       step: 1,
     },
-    latitude: {
-      value: position.lat,
-      disabled: true,
-    },
-    longitude: {
-      value: position.lng,
-      disabled: true,
-    },
     UTCOffset: {
       value: calculateUTCOffsetForLng(position.lng),
       min: -14,
@@ -67,6 +59,8 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
         <Canvas camera={{ position: [9, 9, 9] }}>
           <Html calculatePosition={() => [8, 8, 0]}>
             <div className="w-40 rounded-lg border border-solid border-zinc-400 bg-zinc-50 p-2 shadow shadow-zinc-400">
+              <p>Latitude: {position.lat.toFixed(2)} °</p>
+              <p>Longitude: {position.lng.toFixed(2)} °</p>
               <p>Elevation: {radToDeg(elevation).toFixed(2)} °</p>
               <p>Azimuth: {radToDeg(azimuth).toFixed(2)} °</p>
               <p>Time: {convertDaysToTimeString(minutes / 1440)}</p>
