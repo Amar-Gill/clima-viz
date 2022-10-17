@@ -49,10 +49,10 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <NavLink href="/solar-calculations">Solar Calculations</NavLink>
           </li>
           <li>
-            <NavLink href="/black-body-model">Black Body Model</NavLink>
+            <NavLink href="/solar-position">Solar Position</NavLink>
           </li>
           <li>
-            <NavLink href="/solar-position">Solar Position</NavLink>
+            <NavLink href="/black-body-model">Black Body Model</NavLink>
           </li>
         </ul>
       </nav>
@@ -105,10 +105,10 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               <NavLinkMobile href="/solar-calculations">Solar Calculations</NavLinkMobile>
             </li>
             <li className="my-2">
-              <NavLinkMobile href="/blackbody-model">Black Body Model</NavLinkMobile>
+              <NavLinkMobile href="/solar-position">Solar Position</NavLinkMobile>
             </li>
             <li className="my-2">
-              <NavLinkMobile href="/solar-position">Solar Position</NavLinkMobile>
+              <NavLinkMobile href="/blackbody-model">Black Body Model</NavLinkMobile>
             </li>
           </ul>
         </div>
