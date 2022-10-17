@@ -49,6 +49,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <NavLink href="/solar-calculations">Solar Calculations</NavLink>
           </li>
           <li>
+            <NavLink href="/solar-position">Solar Position</NavLink>
+          </li>
+          <li>
             <NavLink href="/black-body-model">Black Body Model</NavLink>
           </li>
         </ul>
@@ -100,6 +103,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             </li>
             <li className="my-2">
               <NavLinkMobile href="/solar-calculations">Solar Calculations</NavLinkMobile>
+            </li>
+            <li className="my-2">
+              <NavLinkMobile href="/solar-position">Solar Position</NavLinkMobile>
             </li>
             <li className="my-2">
               <NavLinkMobile href="/blackbody-model">Black Body Model</NavLinkMobile>

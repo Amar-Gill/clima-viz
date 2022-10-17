@@ -38,3 +38,54 @@ export function getChartLabels() {
     labelsLeapYear,
   };
 }
+
+/**
+ *
+ * @param {number} numDays the number of days as a decimal value
+ * @returns {string} string representing the time of day in the format 'hh:mm:ss'
+ */
+export function convertDaysToTimeString(numDays: number): string {
+  // account for roll over time where dayFraction > 1
+  const singleDayFraction = numDays % 1;
+
+  const hours = singleDayFraction * 24;
+  const truncatedHours = Math.trunc(hours);
+
+  const minutes = (hours - truncatedHours) * 60;
+  const truncatedMinutes = Math.trunc(minutes);
+
+  const seconds = (minutes - truncatedMinutes) * 60;
+  const truncatedSeconds = Math.trunc(seconds);
+
+  const hh =
+    truncatedHours.toString().length === 1 ? `0${truncatedHours}` : truncatedHours;
+  const mm =
+    truncatedMinutes.toString().length === 1 ? `0${truncatedMinutes}` : truncatedMinutes;
+  const ss =
+    truncatedSeconds.toString().length === 1 ? `0${truncatedSeconds}` : truncatedSeconds;
+
+  return `${hh}:${mm}:${ss}`;
+}
+
+/**
+ *
+ * @param date
+ * @param tzString
+ * @returns {Date}
+ * {@link https://stackoverflow.com/questions/10087819/convert-date-to-another-timezone-in-javascript}
+ */
+export function convertTZ(date: Date, tzString: string): Date {
+  return new Date(
+    (typeof date === 'string' ? new Date(date) : date).toLocaleString('en-US', {
+      timeZone: tzString,
+    }),
+  );
+}
+
+/**
+ * @param longitude
+ * @returns number between -14 and 14 representing UTC offset using strict geometric calculation based on longitude alone
+ */
+export function calculateUTCOffsetForLng(longitude: number): number {
+  return Math.round(longitude / 15);
+}

@@ -1,6 +1,8 @@
 import { differenceInDays } from 'date-fns';
 import type { LatLngLiteral } from 'leaflet';
 
+import { calculateUTCOffsetForLng } from './utils';
+
 class SolarCalculator {
   private baselineReferenceJD = 2415020;
 
@@ -8,108 +10,77 @@ class SolarCalculator {
 
   private position: LatLngLiteral;
 
+  private deg2Rad = Math.PI / 180;
+
+  private rad2Deg = 180 / Math.PI;
+
+  private radPerDay = (2 * Math.PI) / 365;
+
+  private UTCOffset: number;
+
   constructor(position: LatLngLiteral) {
     this.position = position;
+    this.UTCOffset = calculateUTCOffsetForLng(position.lng);
   }
 
   /**
    *
-   * @param {LatLng} position The Leaflet js position associated with the calculator instance
-   * @returns {number} number between -14 and 14
-   * which is an approximate UTC offset based on position.
-   */
-  public calculateUTCOffset(position = this.position): number {
-    return Math.ceil(position.lng / 15);
-  }
-
-  /**
-   *
-   * @param {number} numDays the number of days as a decimal value
-   * @returns {string} string representing the time of day in the format 'hh:mm:ss'
-   */
-  static convertDaysToTimeString(numDays: number): string {
-    // account for roll over time where dayFraction > 1
-    const singleDayFraction = numDays % 1;
-
-    const hours = singleDayFraction * 24;
-    const truncatedHours = Math.trunc(hours);
-
-    const minutes = (hours - truncatedHours) * 60;
-    const truncatedMinutes = Math.trunc(minutes);
-
-    const seconds = (minutes - truncatedMinutes) * 60;
-    const truncatedSeconds = Math.trunc(seconds);
-
-    const hh =
-      truncatedHours.toString().length === 1 ? `0${truncatedHours}` : truncatedHours;
-    const mm =
-      truncatedMinutes.toString().length === 1
-        ? `0${truncatedMinutes}`
-        : truncatedMinutes;
-    const ss =
-      truncatedSeconds.toString().length === 1
-        ? `0${truncatedSeconds}`
-        : truncatedSeconds;
-
-    return `${hh}:${mm}:${ss}`;
-  }
-
-  /**
-   *
-   * @param {Date} date
-   * @returns {number} the Julian Day using DublinJD reference date epoch of December 31, 1899, 12:00.
+   * @param date
+   * @returns the Julian Day using DublinJD reference date epoch of December 31, 1899, 12:00.
    * The Julian Day is the total number of days since the beginning of Julian Epoch.
-   * https://en.wikipedia.org/wiki/Julian_day
+   * {@link https://en.wikipedia.org/wiki/Julian_day}
    */
   private julianDay(date: Date): number {
-    const UTCOffset = this.calculateUTCOffset(this.position);
-
     const deltaDays = differenceInDays(date, this.baselineReferenceDate);
 
     return (
-      this.baselineReferenceJD + deltaDays + 0.5 + (date.getHours() + UTCOffset) / 24
+      this.baselineReferenceJD + deltaDays + 0.5 + (date.getHours() + this.UTCOffset) / 24
     );
   }
 
   /**
-   * @param {number} julianDay
-   * @returns {number} the Julian Century based on the Julian Day.
+   * @param julianDay
+   * @returns the Julian Century based on the Julian Day.
+   * {@link https://gml.noaa.gov/grad/solcalc/}
    */
   private julianCentury(julianDay: number): number {
     return (julianDay - 2451545) / 36525;
   }
 
   /**
-   * @param {number} julianCentury
-   * @returns {number} the mean longitude of the Sun in degrees.
-   * https://en.wikipedia.org/wiki/Position_of_the_Sun
+   * @param julianCentury
+   * @returns the mean longitude of the Sun in degrees.
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
   private meanLongitudeOfSun(julianCentury: number): number {
     return (280.46646 + julianCentury * (36000.76983 + julianCentury * 0.0003032)) % 360;
   }
 
   /**
-   * @param {number} julianCentury
-   * @returns {number} the mean anomaly of the Sun in degrees.
-   * https://en.wikipedia.org/wiki/Position_of_the_Sun
+   * @param julianCentury
+   * @returns the mean anomaly of the Sun in degrees.
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
   private meanAnomalyOfSun(julianCentury: number): number {
     return 357.52911 + julianCentury * (35999.05029 - 0.0001537 * julianCentury);
   }
 
   /**
-   * @param {number} julianCentury
-   * @returns {number} orbital eccentricity of Earth, a unitless value.
-   * https://en.wikipedia.org/wiki/Position_of_the_Sun
+   * @param julianCentury
+   * @returns orbital eccentricity of Earth, a unitless value.
+   * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
   private orbitalEccentricityOfEarth(julianCentury: number): number {
     return 0.016708634 - julianCentury * (0.000042037 + 0.0000001267 * julianCentury);
   }
 
   /**
-   * @param {number} julianCentury
-   * @returns {number} mean ecliptic obliquity of Earth's orbit in degrees.
-   * https://en.wikipedia.org/wiki/Position_of_the_Sun
+   * @param julianCentury
+   * @returns mean ecliptic obliquity of Earth's orbit in degrees.
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
   private meanEclipticObliquity(julianCentury: number): number {
     return (
@@ -124,10 +95,11 @@ class SolarCalculator {
   }
 
   /**
-   * @param {number} meanEclipticObliquity
-   * @param {number} julianCentury
-   * @returns {number} corrected ecliptic obliquity of Earth's orbit in degrees.
-   * https://en.wikipedia.org/wiki/Position_of_the_Sun
+   * @param meanEclipticObliquity
+   * @param julianCentury
+   * @returns corrected ecliptic obliquity of Earth's orbit in degrees.
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
   private correctedEclipticObliquity(
     meanEclipticObliquity: number,
@@ -140,9 +112,10 @@ class SolarCalculator {
   }
 
   /**
-   * @param {number} correctedObliquity
-   * @returns {number} returns a unitless variation value in obliquity.
-   * https://en.wikipedia.org/wiki/Position_of_the_Sun
+   * @param correctedObliquity
+   * @returns returns a unitless variation value in obliquity.
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Position_of_the_Sun}
    */
   private variationY(correctedObliquity: number): number {
     return (
@@ -152,13 +125,14 @@ class SolarCalculator {
   }
 
   /**
-   * @param {number} meanLongitudeOfSun
-   * @param {number} meanAnomalyOfSun
-   * @param {number} orbitalEccentricityOfEarth
-   * @param {number} variationY
-   * @returns {number} change in minutes of the time of solar noon.
+   * @param meanLongitudeOfSun
+   * @param meanAnomalyOfSun
+   * @param orbitalEccentricityOfEarth
+   * @param variationY
+   * @returns change in minutes of the time of solar noon.
    * It is the difference between apparent solar time and mean solar time in minutes.
-   * https://en.wikipedia.org/wiki/Equation_of_time
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Equation_of_time}
    */
   private equationOfTime(
     meanLongitudeOfSun: number,
@@ -191,9 +165,10 @@ class SolarCalculator {
    *
    * @param julianCentury
    * @param meanAnomalyOfSun
-   * @returns {number} the angular difference between the actual position Earth in its elliptical orbit
+   * @returns the angular difference between the actual position Earth in its elliptical orbit
    * and the position it would occupy if its motion were uniform, in a circular orbit of the same period.
-   * https://en.wikipedia.org/wiki/Equation_of_the_center
+   * {@link https://gml.noaa.gov/grad/solcalc/}
+   * {@link https://en.wikipedia.org/wiki/Equation_of_the_center}
    */
   private equationOfCenter(julianCentury: number, meanAnomalyOfSun: number): number {
     return (
@@ -207,9 +182,10 @@ class SolarCalculator {
 
   /**
    *
-   * @param {number} meanLongitudeOfSun
-   * @param {number} equationOfCenter
-   * @returns {number} true longitude of the Sun in degrees.
+   * @param meanLongitudeOfSun
+   * @param equationOfCenter
+   * @returns true longitude of the Sun in degrees.
+   * {@link https://gml.noaa.gov/grad/solcalc/}
    */
   private trueLongitudeOfSun(
     meanLongitudeOfSun: number,
@@ -220,9 +196,10 @@ class SolarCalculator {
 
   /**
    *
-   * @param {number} julianCentury
-   * @param {number} trueLongitudeOfSun
-   * @returns {number} apparent longitude of the Sun in degrees.
+   * @param julianCentury
+   * @param trueLongitudeOfSun
+   * @returns apparent longitude of the Sun in degrees.
+   * {@link https://gml.noaa.gov/grad/solcalc/}
    */
   private apparentLongitudeOfSun(
     julianCentury: number,
@@ -237,10 +214,11 @@ class SolarCalculator {
 
   /**
    *
-   * @param {number} apparentLongitudeOfSun
-   * @param {number} correctedObliquity
-   * @returns {number} the declination of the sun in degrees. The solar declination varies from -23.44° at the (northern hemisphere) winter solstice,
+   * @param apparentLongitudeOfSun
+   * @param correctedObliquity
+   * @returns the declination of the sun in degrees. The solar declination varies from -23.44° at the (northern hemisphere) winter solstice,
    * through 0° at the vernal equinox, to +23.44° at the summer solstice.
+   * {@link https://gml.noaa.gov/grad/solcalc/}
    */
   private solarDeclination(
     apparentLongitudeOfSun: number,
@@ -257,9 +235,9 @@ class SolarCalculator {
 
   /**
    *
-   * @param {number} latitude - number representing latitudinal position to assess.
-   * @param {number} solarDeclination - solar declination angle in degrees.
-   * @returns {number} returns the hour angle at sunrise in degrees.
+   * @param latitude - number representing latitudinal position to assess.
+   * @param solarDeclination - solar declination angle in degrees.
+   * @returns returns the hour angle at sunrise in degrees.
    * @see https://en.wikipedia.org/wiki/Hour_angle
    */
   private hourAngleSunrise(latitude: number, solarDeclination: number) {
@@ -277,9 +255,9 @@ class SolarCalculator {
 
   /**
    *
-   * @param {number} hourAngleSunrise hour angle at sunrise in degrees.
-   * @param {number} solarNoon time of solar noon as a fraction of a day. 0 - 1.
-   * @returns {number} time of sunrise as a fraction of a day. 0 -1.
+   * @param hourAngleSunrise hour angle at sunrise in degrees.
+   * @param solarNoon time of solar noon as a fraction of a day. 0 - 1.
+   * @returns time of sunrise as a fraction of a day. 0 -1.
    */
   private sunriseTime(hourAngleSunrise: number, solarNoon: number) {
     return (solarNoon * 1440 - hourAngleSunrise * 4) / 1440;
@@ -287,9 +265,9 @@ class SolarCalculator {
 
   /**
    *
-   * @param {number} hourAngleSunrise hour angle at sunrise in degrees.
-   * @param {number} solarNoon time of solar noon as a fraction of a day. 0 - 1.
-   * @returns {number} time of sunset as a fraction of a day. 0 - 1.
+   * @param hourAngleSunrise hour angle at sunrise in degrees.
+   * @param solarNoon time of solar noon as a fraction of a day. 0 - 1.
+   * @returns time of sunset as a fraction of a day. 0 - 1.
    */
   private sunsetTime(hourAngleSunrise: number, solarNoon: number) {
     return (solarNoon * 1440 + hourAngleSunrise * 4) / 1440;
@@ -297,8 +275,8 @@ class SolarCalculator {
 
   /**
    *
-   * @param {Date} date the Date to calculate times for.
-   * @returns {Object} object containing sunrise and sunset times as day fractions. 0 - 1.
+   * @param the Date to calculate times for.
+   * @returns object containing sunrise and sunset times as day fractions. 0 - 1.
    */
   public calculateSunriseAndSunset(date: Date) {
     const JD = this.julianDay(date);
@@ -333,7 +311,7 @@ class SolarCalculator {
     const eqnOfTime = this.equationOfTime(meanLong, meanAnom, orbitalEccentricity, varY);
 
     const solarNoon =
-      (720 - 4 * this.position.lng - eqnOfTime + this.calculateUTCOffset() * 60) / 1440;
+      (720 - 4 * this.position.lng - eqnOfTime + this.UTCOffset * 60) / 1440;
 
     const sunriseTime = this.sunriseTime(hourAngleSunrise, solarNoon);
 
@@ -347,20 +325,18 @@ class SolarCalculator {
 
   /**
    *
-   * @param {Date} date date to calculate solar noon at
-   * @returns {number} time of day where solar noon occurs, as floating point number representing fraction of a day
+   * @param date to calculate solar noon at
+   * @returns  time of day where solar noon occurs, as floating point number representing fraction of a day
    */
   public calculateSolarNoon(date: Date) {
     const eqnOfTime = this.calculateEquationOfTime(date);
 
-    return (
-      (720 - 4 * this.position.lng - eqnOfTime + this.calculateUTCOffset() * 60) / 1440
-    );
+    return (720 - 4 * this.position.lng - eqnOfTime + this.UTCOffset * 60) / 1440;
   }
 
   /**
-   * @param {Date} date
-   * @returns {number} the equation of time in minutes for the given date and position.
+   * @param date
+   * @returns  the equation of time in minutes for the given date and position.
    * It is the difference between apparent solar time and mean solar time in minutes.
    * Or the change in minutes of the time of solar noon.
    * https://en.wikipedia.org/wiki/Equation_of_time
@@ -386,8 +362,8 @@ class SolarCalculator {
   }
 
   /**
-   * @param {Date} date
-   * @returns {number} the solar declination of the Sun in degrees for the given date and position.
+   * @param date
+   * @returns  the solar declination of the Sun in degrees for the given date and position.
    * The solar declination varies from -23.44° at the (northern hemisphere) winter solstice,
    * through 0° at the vernal equinox, to +23.44° at the summer solstice.
    */
@@ -415,8 +391,8 @@ class SolarCalculator {
 
   /**
    *
-   * @param {Date} date
-   * @returns {number} the maximum elevation of the sun for a given date and position.
+   * @param date
+   * @returns  the maximum elevation of the sun for a given date and position.
    * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/elevation-angle}
    */
   public calculateMaxSolarElevationAngle(date: Date): number {
@@ -425,6 +401,160 @@ class SolarCalculator {
     return this.position.lat > 0
       ? 90 - this.position.lat + solarDeclinationAngle
       : 90 + this.position.lat - solarDeclinationAngle;
+  }
+
+  /**
+   * Context of a single day equations
+   */
+
+  /**
+   * @param dayOfYear - the number between 1-366 representing which day of the year to calculate value for
+   * @returns number representing equation of time in minutes
+   * @description simplified equation for EOT
+   */
+  public alternateEquationOfTime(dayOfYear: number): number {
+    const B = this.radPerDay * (dayOfYear - 81); // first term is radians / day the earth orbits around sun
+    return 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
+  }
+
+  /**
+   * @param dayOfYear - the number between 1-366 representing which day of the year to calculate value for
+   * @param elapsedMinutes - the number of minutes elapsed on the day to calcualate value for
+   * @param UTCOffset - number between -14 - 14 representing the timezone of the location
+   * @returns converts given date into local solar time in number of hours, takes into account position
+   * decimal fraction represents the fraction of an hour
+   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
+   */
+  public localSolarTime(
+    dayOfYear: number,
+    elapsedMinutes: number,
+    UTCOffset = this.UTCOffset,
+  ): number {
+    const localSolarTimeMeridian = 15 * UTCOffset;
+
+    const timeCorrection =
+      4 * (this.position.lng - localSolarTimeMeridian) +
+      this.alternateEquationOfTime(dayOfYear);
+
+    return (elapsedMinutes + timeCorrection) / 60;
+  }
+
+  /**
+   *
+   * @param dayOfYear - the number between 1-366 representing which day of the year to calculate value for
+   * @param elapsedMinutes - the number of minutes elapsed on the day to calcualate value for
+   * @param UTCOffset - number between -14 - 14 representing the timezone of the location
+   * @returns hour angle in degrees
+   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
+   */
+  public hourAngle(
+    dayOfYear: number,
+    elapsedMinutes: number,
+    UTCOffset = this.UTCOffset,
+  ): number {
+    return 15 * (this.localSolarTime(dayOfYear, elapsedMinutes, UTCOffset) - 12);
+  }
+
+  /**
+   * @param dayOfYear - the number between 1-366 representing which day of the year to calculate value for
+   * @returns solar declination in degrees
+   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/the-suns-position}
+   */
+  public alternateSolarDeclination(dayOfYear: number): number {
+    return 23.45 * Math.sin(this.radPerDay * (dayOfYear - 81));
+  }
+
+  /**
+   * @param dayOfYear - the number between 1-366 representing which day of the year to calculate value for
+   * @param elapsedMinutes - the number of minutes elapsed on the day to calcualate value for
+   * @returns elevation angle in radians
+   * @see https://www.pveducation.org/pvcdrom/properties-of-sunlight/elevation-angle
+   */
+  public elevationAngle(dayOfYear: number, elapsedMinutes: number): number {
+    const deg2Rad = this.deg2Rad;
+    const solarDeclination = this.alternateSolarDeclination(dayOfYear);
+    const HRA = this.hourAngle(dayOfYear, elapsedMinutes);
+
+    return Math.asin(
+      Math.sin(deg2Rad * solarDeclination) * Math.sin(deg2Rad * this.position.lat) +
+        Math.cos(deg2Rad * solarDeclination) *
+          Math.cos(deg2Rad * this.position.lat) *
+          Math.cos(deg2Rad * HRA),
+    );
+  }
+
+  /**
+   *
+   * @param dayOfYear - the number between 1-366 representing which day of the year to calculate value for
+   * @param elapsedMinutes - the number of minutes elapsed on the day to calcualate value for
+   * @returns zenith angle in radians
+   * @see https://www.pveducation.org/pvcdrom/properties-of-sunlight/elevation-angle
+   */
+  public zenithAngle(dayOfYear: number, elapsedMinutes: number): number {
+    return Math.PI / 2 - this.elevationAngle(dayOfYear, elapsedMinutes);
+  }
+
+  /**
+   *
+   * @param dayOfYear - the number between 1-366 representing which day of the year to calculate value for
+   * @param elapsedMinutes - the number of minutes elapsed on the day to calcualate value for
+   * @returns  azimuthAngle in radians
+   * {@link https://www.pveducation.org/pvcdrom/properties-of-sunlight/azimuth-angle}
+   * tested = true
+   */
+  public azimuthAngle(dayOfYear: number, elapsedMinutes: number): number {
+    const deg2Rad = this.deg2Rad;
+    const solarDeclination = this.alternateSolarDeclination(dayOfYear);
+    const HRA = this.hourAngle(dayOfYear, elapsedMinutes);
+
+    const az = Math.acos(
+      (Math.sin(deg2Rad * solarDeclination) * Math.cos(deg2Rad * this.position.lat) -
+        Math.cos(deg2Rad * solarDeclination) *
+          Math.sin(deg2Rad * this.position.lat) *
+          Math.cos(deg2Rad * HRA)) /
+        Math.cos(this.elevationAngle(dayOfYear, elapsedMinutes)),
+    );
+
+    return HRA > 0 ? 2 * Math.PI - az : az;
+  }
+
+  /**
+   * @param dayOfYear - number between 1-366 representing what day of the year to calculate value for
+   * @param elapsedMinutes - number between 0 - 1440 representing exact time of day to calculate value for
+   * @param UTCOffset - number between -14 - 14 representing the timezone or timezone offset from UTC greenwich time
+   * @returns object containing solar position angles (elevation, zenith, azimuth)
+   */
+  public solarPosition(
+    dayOfYear: number,
+    elapsedMinutes: number,
+    UTCOffset = this.UTCOffset,
+  ) {
+    const deg2Rad = this.deg2Rad;
+    const solarDeclination = this.alternateSolarDeclination(dayOfYear);
+    const HRA = this.hourAngle(dayOfYear, elapsedMinutes, UTCOffset);
+
+    const elevation = Math.asin(
+      Math.sin(deg2Rad * solarDeclination) * Math.sin(deg2Rad * this.position.lat) +
+        Math.cos(deg2Rad * solarDeclination) *
+          Math.cos(deg2Rad * this.position.lat) *
+          Math.cos(deg2Rad * HRA),
+    );
+
+    const zenith = Math.PI / 2 - elevation;
+
+    const az = Math.acos(
+      (Math.sin(deg2Rad * solarDeclination) * Math.cos(deg2Rad * this.position.lat) -
+        Math.cos(deg2Rad * solarDeclination) *
+          Math.sin(deg2Rad * this.position.lat) *
+          Math.cos(deg2Rad * HRA)) /
+        Math.cos(elevation),
+    );
+
+    return {
+      elevation,
+      zenith,
+      azimuth: HRA > 0 ? 2 * Math.PI - az : az,
+    };
   }
 }
 
