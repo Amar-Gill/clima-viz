@@ -11,9 +11,12 @@ import {
   Tooltip,
 } from 'chart.js';
 import { isLeapYear, startOfYear } from 'date-fns';
-import SolarCalculator from 'lib/solar-calculator';
 import useStore from 'lib/store';
-import { convertDaysToTimeString, getChartLabels } from 'lib/utils';
+import {
+  calculateUTCOffsetForLng,
+  convertDaysToTimeString,
+  getChartLabels,
+} from 'lib/utils';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -293,8 +296,6 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
     ],
   };
 
-  const calculator = position ? new SolarCalculator(position) : undefined;
-
   return (
     <>
       <Head>
@@ -303,11 +304,11 @@ const SolarCalculations = ({ labelsYear, labelsLeapYear }: StaticProps) => {
       </Head>
       <div className="container py-4">
         <div className="rounded-lg border border-solid border-zinc-400 shadow shadow-zinc-400">
-          {calculator ? (
+          {position ? (
             <>
               <section className="border-b border-solid border-zinc-400 p-2">
-                <p>Position: {position?.toString()}</p>
-                <p>UTC Offset: {calculator.calculateUTCOffset()} hours</p>
+                <p>Position: {position.toString()}</p>
+                <p>UTC Offset: {calculateUTCOffsetForLng(position.lng)} hours</p>
                 <label htmlFor="select-year">Select Year: </label>
                 <select
                   id="select-year"
