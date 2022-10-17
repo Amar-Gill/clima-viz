@@ -58,12 +58,19 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
       <div className="h-screen w-full">
         <Canvas camera={{ position: [9, 9, 9] }}>
           <Html calculatePosition={() => [8, 8, 0]}>
-            <div className="w-40 rounded-lg border border-solid border-zinc-400 bg-zinc-50 p-2 shadow shadow-zinc-400">
-              <p>Latitude: {position.lat.toFixed(2)} °</p>
-              <p>Longitude: {position.lng.toFixed(2)} °</p>
-              <p>Elevation: {radToDeg(elevation).toFixed(2)} °</p>
-              <p>Azimuth: {radToDeg(azimuth).toFixed(2)} °</p>
-              <p>Time: {convertDaysToTimeString(minutes / 1440)}</p>
+            <div className="grid w-44 grid-cols-2 rounded-lg border border-solid border-zinc-400 bg-zinc-50 p-2 shadow shadow-zinc-400">
+              <p>Latitude:</p>
+              <p className="text-right">{position.lat.toFixed(2)} °</p>
+              <p>Longitude: </p>
+              <p className="text-right">{position.lng.toFixed(2)} °</p>
+              <p>Elevation:</p>
+              <p className="text-right">{radToDeg(elevation).toFixed(2)} °</p>
+              <p>Azimuth:</p>
+              <p className="text-right">{radToDeg(azimuth).toFixed(2)} °</p>
+              <p>Time:</p>
+              <p className="text-right">
+                {convertDaysToTimeString(minutes / 1440).slice(0, 5)}
+              </p>
             </div>
           </Html>
           <OrbitControls />
