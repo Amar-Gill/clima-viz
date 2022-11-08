@@ -1,4 +1,4 @@
-import SolarCalculator from 'lib/solar-calculator';
+import SolarCalculator from 'lib/solar-chart-calculator';
 import { getDaysOfYear } from 'lib/utils';
 import type { NextApiRequest, NextApiResponse } from 'next';
 

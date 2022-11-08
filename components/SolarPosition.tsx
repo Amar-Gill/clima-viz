@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { getDayOfYear } from 'date-fns';
 import { LatLng } from 'leaflet';
 import { useControls } from 'leva';
-import SolarCalculator from 'lib/solar-calculator';
+import SolarCalculator from 'lib/solar-chart-calculator';
 import { calculateUTCOffsetForLng, convertDaysToTimeString } from 'lib/utils';
 import { radToDeg } from 'three/src/math/MathUtils';
 
