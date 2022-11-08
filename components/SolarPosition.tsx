@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { getDayOfYear } from 'date-fns';
 import { LatLng } from 'leaflet';
 import { useControls } from 'leva';
-import SolarCalculator from 'lib/solar-chart-calculator';
+import SolarPositionCalculator from 'lib/solar-position-calculator';
 import { calculateUTCOffsetForLng, convertDaysToTimeString } from 'lib/utils';
 import { radToDeg } from 'three/src/math/MathUtils';
 
@@ -33,7 +33,7 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
     },
   });
 
-  const calculator = new SolarCalculator(position);
+  const calculator = new SolarPositionCalculator(position);
 
   // https://mathinsight.org/spherical_coordinates
   const radius = 8;
