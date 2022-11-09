@@ -1,4 +1,4 @@
-import SolarCalculator from 'lib/solar-calculator';
+import SolarChartCalculator from 'lib/solar-chart-calculator';
 import { getDaysOfYear } from 'lib/utils';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
@@ -15,15 +15,15 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
   const { query } = req;
   const { year, lat, lng } = query as { year: string; lat: string; lng: string };
 
-  const calculator = new SolarCalculator({
+  const calculator = new SolarChartCalculator({
     lat: parseFloat(lat),
     lng: parseFloat(lng),
   });
 
   const days = getDaysOfYear(parseInt(year));
 
-  const sunriseTimeData = [] as number[];
-  const sunsetTimeData = [] as number[];
+  const sunriseTimeData: number[] = [];
+  const sunsetTimeData: number[] = [];
   days.forEach((date) => {
     const { sunriseTime, sunsetTime } = calculator.calculateSunriseAndSunset(date);
     sunriseTimeData.push(sunriseTime);
