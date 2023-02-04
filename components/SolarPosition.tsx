@@ -5,6 +5,7 @@ import { LatLng } from 'leaflet';
 import { useControls } from 'leva';
 import SolarPositionCalculator from 'lib/solar-position-calculator';
 import { calculateUTCOffsetForLng, convertDaysToTimeString } from 'lib/utils';
+import { useMemo } from 'react';
 import { radToDeg } from 'three/src/math/MathUtils';
 
 type SolarPositionProps = {
@@ -33,7 +34,7 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
     },
   });
 
-  const calculator = new SolarPositionCalculator(position);
+  const calculator = useMemo(() => new SolarPositionCalculator(position), [position]);
 
   // https://mathinsight.org/spherical_coordinates
   const radius = 8;
