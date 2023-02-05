@@ -1,5 +1,5 @@
 import { Html, OrbitControls, Plane, Sphere } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { getDayOfYear } from 'date-fns';
 import { LatLng } from 'leaflet';
 import { useControls } from 'leva';
@@ -12,8 +12,12 @@ type SolarPositionProps = {
   position: LatLng;
 };
 
+type UseFrameContainerProps = {
+  cb: Function;
+};
+
 const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
-  const { minutes, dayOfYear, UTCOffset } = useControls({
+  const [{ minutes, dayOfYear, UTCOffset, autoPlay }, set] = useControls(() => ({
     minutes: {
       value: 0,
       min: 0,
@@ -32,7 +36,18 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
       max: 14,
       step: 1,
     },
-  });
+    autoPlay: false,
+  }));
+
+  function incrementMinutes() {
+    if (!autoPlay) return;
+
+    if (minutes >= 1440) {
+      set({ minutes: 0 });
+      return;
+    }
+    set({ minutes: minutes + 10 });
+  }
 
   const calculator = useMemo(() => new SolarPositionCalculator(position), [position]);
 
@@ -87,10 +102,16 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
           <axesHelper args={[5]} />
           <ambientLight args={['white', 0.1]} />
           <pointLight intensity={1.5} position={[x, y, z]} />
+          <UseFrameContainer cb={incrementMinutes} />
         </Canvas>
       </div>
     </>
   );
+};
+
+const UseFrameContainer: React.FC<UseFrameContainerProps> = ({ cb }) => {
+  useFrame(() => cb());
+  return null;
 };
 
 export default SolarPosition;
