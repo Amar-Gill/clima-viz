@@ -40,8 +40,6 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
   }));
 
   function incrementMinutes() {
-    if (!autoPlay) return;
-
     if (minutes >= 1440) {
       set({ minutes: 0 });
       return;
@@ -102,7 +100,7 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
           <axesHelper args={[5]} />
           <ambientLight args={['white', 0.1]} />
           <pointLight intensity={1.5} position={[x, y, z]} />
-          <UseFrameContainer cb={incrementMinutes} />
+          {autoPlay && <UseFrameContainer cb={incrementMinutes} />}
         </Canvas>
       </div>
     </>
