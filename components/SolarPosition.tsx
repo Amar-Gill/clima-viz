@@ -24,25 +24,32 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
         min: 0,
         max: 1440,
         step: 10,
+        label: 'Mins Elapsed',
       },
       dayOfYear: {
         value: getDayOfYear(new Date()),
         min: 1,
         max: 365,
         step: 1,
+        label: 'Day of Year',
       },
       UTCOffset: {
         value: calculateUTCOffsetForLng(position.lng),
         min: -14,
         max: 14,
         step: 1,
+        label: 'UTC Offset',
       },
-      autoPlay: false,
+      autoPlay: {
+        value: false,
+        label: 'Animate',
+      },
       autoPlaySpeed: {
         value: 1,
         min: 1,
         max: 30,
         step: 1,
+        label: 'Animate Speed',
       },
     }),
   );
