@@ -41,7 +41,8 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
 
   function incrementMinutes() {
     if (minutes >= 1440) {
-      set({ minutes: 0 });
+      const dayNum = dayOfYear >= 365 ? 1 : dayOfYear + 1;
+      set({ minutes: 0, dayOfYear: dayNum });
       return;
     }
     set({ minutes: minutes + 10 });
