@@ -17,7 +17,7 @@ type UseFrameContainerProps = {
 };
 
 const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
-  const [{ minutes, dayOfYear, UTCOffset, autoPlay, autoPlaySpeed }, set] = useControls(
+  const [{ minutes, dayOfYear, UTCOffset, animate, minutesIncrement }, set] = useControls(
     () => ({
       minutes: {
         value: 0,
@@ -40,11 +40,11 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
         step: 1,
         label: 'UTC Offset',
       },
-      autoPlay: {
+      animate: {
         value: false,
         label: 'Animate',
       },
-      autoPlaySpeed: {
+      minutesIncrement: {
         value: 1,
         min: 1,
         max: 30,
@@ -60,7 +60,7 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
       set({ minutes: 0, dayOfYear: dayNum });
       return;
     }
-    set({ minutes: minutes + autoPlaySpeed });
+    set({ minutes: minutes + minutesIncrement });
   }
 
   const calculator = useMemo(() => new SolarPositionCalculator(position), [position]);
@@ -116,7 +116,7 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
           <axesHelper args={[5]} />
           <ambientLight args={['white', 0.1]} />
           <pointLight intensity={1.5} position={[x, y, z]} />
-          {autoPlay && <UseFrameContainer cb={incrementMinutes} />}
+          {animate && <UseFrameContainer cb={incrementMinutes} />}
         </Canvas>
       </div>
     </>
