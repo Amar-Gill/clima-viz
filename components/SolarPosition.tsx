@@ -1,5 +1,5 @@
 import { Html, OrbitControls, Plane, Sphere } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { getDayOfYear } from 'date-fns';
 import { LatLng } from 'leaflet';
 import { useControls } from 'leva';
@@ -12,27 +12,56 @@ type SolarPositionProps = {
   position: LatLng;
 };
 
+type UseFrameContainerProps = {
+  cb: Function;
+};
+
 const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
-  const { minutes, dayOfYear, UTCOffset } = useControls({
-    minutes: {
-      value: 0,
-      min: 0,
-      max: 1440,
-      step: 10,
-    },
-    dayOfYear: {
-      value: getDayOfYear(new Date()),
-      min: 1,
-      max: 365,
-      step: 1,
-    },
-    UTCOffset: {
-      value: calculateUTCOffsetForLng(position.lng),
-      min: -14,
-      max: 14,
-      step: 1,
-    },
-  });
+  const [{ minutes, dayOfYear, UTCOffset, animate, minutesIncrement }, set] = useControls(
+    () => ({
+      minutes: {
+        value: 0,
+        min: 0,
+        max: 1440,
+        step: 10,
+        label: 'Mins Elapsed',
+      },
+      dayOfYear: {
+        value: getDayOfYear(new Date()),
+        min: 1,
+        max: 365,
+        step: 1,
+        label: 'Day of Year',
+      },
+      UTCOffset: {
+        value: calculateUTCOffsetForLng(position.lng),
+        min: -14,
+        max: 14,
+        step: 1,
+        label: 'UTC Offset',
+      },
+      animate: {
+        value: false,
+        label: 'Animate',
+      },
+      minutesIncrement: {
+        value: 1,
+        min: 1,
+        max: 30,
+        step: 1,
+        label: 'Animate Speed',
+      },
+    }),
+  );
+
+  function incrementMinutes() {
+    if (minutes >= 1440) {
+      const dayNum = dayOfYear >= 365 ? 1 : dayOfYear + 1;
+      set({ minutes: 0, dayOfYear: dayNum });
+      return;
+    }
+    set({ minutes: minutes + minutesIncrement });
+  }
 
   const calculator = useMemo(() => new SolarPositionCalculator(position), [position]);
 
@@ -87,10 +116,16 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
           <axesHelper args={[5]} />
           <ambientLight args={['white', 0.1]} />
           <pointLight intensity={1.5} position={[x, y, z]} />
+          {animate && <UseFrameContainer cb={incrementMinutes} />}
         </Canvas>
       </div>
     </>
   );
+};
+
+const UseFrameContainer: React.FC<UseFrameContainerProps> = ({ cb }) => {
+  useFrame(() => cb());
+  return null;
 };
 
 export default SolarPosition;
