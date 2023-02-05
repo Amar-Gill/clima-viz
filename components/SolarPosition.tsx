@@ -17,27 +17,35 @@ type UseFrameContainerProps = {
 };
 
 const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
-  const [{ minutes, dayOfYear, UTCOffset, autoPlay }, set] = useControls(() => ({
-    minutes: {
-      value: 0,
-      min: 0,
-      max: 1440,
-      step: 10,
-    },
-    dayOfYear: {
-      value: getDayOfYear(new Date()),
-      min: 1,
-      max: 365,
-      step: 1,
-    },
-    UTCOffset: {
-      value: calculateUTCOffsetForLng(position.lng),
-      min: -14,
-      max: 14,
-      step: 1,
-    },
-    autoPlay: false,
-  }));
+  const [{ minutes, dayOfYear, UTCOffset, autoPlay, autoPlaySpeed }, set] = useControls(
+    () => ({
+      minutes: {
+        value: 0,
+        min: 0,
+        max: 1440,
+        step: 10,
+      },
+      dayOfYear: {
+        value: getDayOfYear(new Date()),
+        min: 1,
+        max: 365,
+        step: 1,
+      },
+      UTCOffset: {
+        value: calculateUTCOffsetForLng(position.lng),
+        min: -14,
+        max: 14,
+        step: 1,
+      },
+      autoPlay: false,
+      autoPlaySpeed: {
+        value: 1,
+        min: 1,
+        max: 30,
+        step: 1,
+      },
+    }),
+  );
 
   function incrementMinutes() {
     if (minutes >= 1440) {
@@ -45,7 +53,7 @@ const SolarPosition: React.FC<SolarPositionProps> = ({ position }) => {
       set({ minutes: 0, dayOfYear: dayNum });
       return;
     }
-    set({ minutes: minutes + 10 });
+    set({ minutes: minutes + autoPlaySpeed });
   }
 
   const calculator = useMemo(() => new SolarPositionCalculator(position), [position]);
